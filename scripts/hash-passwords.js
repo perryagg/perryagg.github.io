@@ -5,7 +5,7 @@
  * Usage: node scripts/hash-passwords.js [password-file]
  *
  * Reads plain-text passwords from a JSON file and generates SHA-256 hashes
- * that the protected pages (file-XX.html) read at runtime from .passwords.json.
+ * that the protected pages (file-XX.html) read at runtime from passwords.json.
  *
  * The password file format:
  * {
@@ -15,8 +15,8 @@
  *   ]
  * }
  *
- * Output: Writes .passwords.json with hashed values.
- *         Does NOT touch any HTML file — the pages fetch .passwords.json themselves.
+ * Output: Writes passwords.json with hashed values.
+ *         Does NOT touch any HTML file — the pages fetch passwords.json themselves.
  */
 
 const fs = require('fs');
@@ -25,7 +25,7 @@ const path = require('path');
 
 // Default password file (plain text, gitignored)
 const DEFAULT_PASSWORD_FILE = '.passwords-plain.json';
-const HASHED_PASSWORD_FILE = '.passwords.json';
+const HASHED_PASSWORD_FILE = 'passwords.json';
 
 /**
  * Hash a password using SHA-256
@@ -75,7 +75,7 @@ function main() {
     };
   });
 
-  // Write hashed passwords to .passwords.json
+  // Write hashed passwords to passwords.json
   const outputData = {
     version: '1.0',
     algorithm: 'SHA-256',
@@ -85,7 +85,7 @@ function main() {
   fs.writeFileSync(outputPath, JSON.stringify(outputData, null, 2) + '\n');
   console.log(`\n✓ Successfully wrote hashed passwords to ${HASHED_PASSWORD_FILE}`);
   console.log(`  Remember: ${passwordFile} should never be committed to git!`);
-  console.log(`  Commit .passwords.json only — the HTML files fetch it at runtime.`);
+  console.log(`  Commit passwords.json only — the HTML files fetch it at runtime.`);
 }
 
 main();

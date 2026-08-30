@@ -89,7 +89,7 @@
 
     var target = raw.toLowerCase();
 
-    fetch(base + ".passwords.json")
+    fetch(base + "passwords.json")
       .then(function (r) {
         if (!r.ok) throw new Error("HTTP " + r.status);
         return r.json();
@@ -109,7 +109,7 @@
       .catch(function () {
         titleEl.textContent = "Lookup failed";
         msgEl.className = "error";
-        msgEl.innerHTML = 'Could not load <code>.passwords.json</code>. <a href="' + base + 'index.html">Back to all pages</a>.';
+        msgEl.innerHTML = 'Could not load <code>passwords.json</code>. <a href="' + base + 'index.html">Back to all pages</a>.';
       });
   })();
 </script>

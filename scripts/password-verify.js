@@ -19,10 +19,10 @@ async function verifyPassword(inputPassword, storedHash) {
   return inputHash === storedHash;
 }
 
-// Load hashed passwords from .passwords.json
+// Load hashed passwords from passwords.json
 async function loadPasswordHashes() {
   try {
-    const response = await fetch('.passwords.json');
+    const response = await fetch('passwords.json');
     if (!response.ok) {
       throw new Error('Failed to load password hashes');
     }

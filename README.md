@@ -32,7 +32,7 @@ This works via a `404.html` redirector that:
 
 1. Reads the last path segment from `location.pathname`.
 2. Validates it as a 64-char hex string.
-3. Looks it up (case-insensitive) in `.passwords.json` and redirects to the
+3. Looks it up (case-insensitive) in `passwords.json` and redirects to the
    matching `file-XX.html`.
 
 Unknown hashes show a "Hash not recognized" message with a link back to the
@@ -50,7 +50,7 @@ index. The redirector is read-only — it does not modify the JSON or any
 | File | Purpose | Committed? |
 |------|---------|------------|
 | `.passwords-plain.json` | Plain-text passwords (source of truth) | ❌ No (gitignored) |
-| `.passwords.json` | SHA-256 hashed passwords (read by every page at runtime) | ✅ Yes |
+| `passwords.json` | SHA-256 hashed passwords (read by every page at runtime) | ✅ Yes |
 | `file-XX.html` | Protected pages — fetch their hash from `.passwords.json` | ✅ Yes |
 | `404.html` | Hash-to-page redirector (see "Direct Hash URLs" above) | ✅ Yes |
 
@@ -80,8 +80,8 @@ Output:
 ✓ Successfully wrote hashed passwords to .passwords.json
 ```
 
-The script only writes `.passwords.json` — it does **not** modify any HTML file.
-Each `file-XX.html` fetches its own hash from `.passwords.json` on page load, keyed
+The script only writes `passwords.json` — it does **not** modify any HTML file.
+Each `file-XX.html` fetches its own hash from `passwords.json` on page load, keyed
 off `location.pathname.split('/').pop()`.
 
 ### 3. Commit the change

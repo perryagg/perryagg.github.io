@@ -185,7 +185,7 @@
 
 <script>
   // --- Configuration -------------------------------------------------------
-  // Page metadata (no passwords stored here - those are hashed in .passwords.json)
+  // Page metadata (no passwords stored here - those are hashed in passwords.json)
   const PAGES = [
     { title: 'Page 01', page: 'file-01.html' },
     { title: 'Page 02', page: 'file-02.html' },
@@ -221,7 +221,7 @@
 
   // --- Password hashing utilities -----------------------------------------
   // Note: Each file-XX.html derives its own key via location.pathname.split('/').pop()
-  // and fetches its hash from .passwords.json on page load.
+  // and fetches its hash from passwords.json on page load.
   // Hash a password using SHA-256 via Web Crypto API
   async function hashPassword(userInput) {
     const encoder = new TextEncoder();
@@ -231,11 +231,11 @@
     return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
   }
 
-  // Load hashed passwords from .passwords.json
+  // Load hashed passwords from passwords.json
   let passwordHashes = {};
   async function loadPasswordHashes() {
     try {
-      const response = await fetch('.passwords.json');
+      const response = await fetch('passwords.json');
       if (!response.ok) throw new Error('Failed to load password hashes');
       const data = await response.json();
       data.entries.forEach(entry => {
