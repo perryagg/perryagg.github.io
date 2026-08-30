@@ -111,7 +111,7 @@
 </footer>
 <script>
   (function () {
-    var PASSWORD = "iris-6028-sunset";
+    var PASSWORD_HASH = "6e28dad55329579b978add5628f89cc40217e7a68a4f77ca33ca377a4ec3d528";
     var pw = document.getElementById("pw");
     var msg = document.getElementById("msg");
     var unlockBtn = document.getElementById("unlock-btn");
@@ -120,16 +120,21 @@
     var gate = document.getElementById("gate");
 
     function tryUnlock() {
-      if (pw.value === PASSWORD) {
-        msg.textContent = "";
-        msg.className = "msg";
-        gate.style.display = "none";
-        reveal.classList.add("open");
-      } else {
-        msg.textContent = "Incorrect password. Please try again.";
-        msg.className = "msg error";
-        pw.select();
-      }
+      var input = pw.value;
+      crypto.subtle.digest("SHA-256", new TextEncoder().encode(input)).then(function(hashBuffer) {
+        var hashArray = Array.from(new Uint8Array(hashBuffer));
+        var inputHash = hashArray.map(function(b) { return b.toString(16).padStart(2, "0"); }).join("");
+        if (inputHash === PASSWORD_HASH) {
+          msg.textContent = "";
+          msg.className = "msg";
+          gate.style.display = "none";
+          reveal.classList.add("open");
+        } else {
+          msg.textContent = "Incorrect password. Please try again.";
+          msg.className = "msg error";
+          pw.select();
+        }
+      });
     }
 
     unlockBtn.addEventListener("click", tryUnlock);

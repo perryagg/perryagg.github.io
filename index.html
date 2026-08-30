@@ -152,97 +152,6 @@
   button.download-btn:hover { background: var(--accent-hover); }
   button.download-btn:active { transform: translateY(1px); }
 
-  /* Modal */
-  .modal-backdrop {
-    position: fixed;
-    inset: 0;
-    background: rgba(2, 6, 23, 0.7);
-    display: none;
-    align-items: center;
-    justify-content: center;
-    padding: 16px;
-    z-index: 100;
-  }
-
-  .modal-backdrop.open { display: flex; }
-
-  .modal {
-    background: var(--panel);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 24px;
-    width: 100%;
-    max-width: 420px;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-  }
-
-  .modal h2 {
-    margin: 0 0 4px;
-    font-size: 1.15rem;
-  }
-
-  .modal .modal-subtitle {
-    color: var(--muted);
-    font-size: 0.88rem;
-    margin-bottom: 18px;
-    word-break: break-all;
-  }
-
-  .modal label {
-    display: block;
-    font-size: 0.85rem;
-    color: var(--muted);
-    margin-bottom: 6px;
-  }
-
-  .modal input[type="password"] {
-    width: 100%;
-    background: var(--bg);
-    color: var(--text);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 10px 12px;
-    font-size: 1rem;
-  }
-
-  .modal input[type="password"]:focus {
-    outline: none;
-    border-color: var(--accent);
-  }
-
-  .modal-actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 8px;
-    margin-top: 18px;
-  }
-
-  .btn-secondary {
-    background: transparent;
-    color: var(--muted);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 9px 14px;
-    cursor: pointer;
-    font-size: 0.92rem;
-  }
-
-  .btn-secondary:hover { color: var(--text); border-color: var(--text); }
-
-  .error {
-    color: var(--danger);
-    font-size: 0.88rem;
-    margin-top: 10px;
-    min-height: 1.2em;
-  }
-
-  .success {
-    color: var(--success);
-    font-size: 0.88rem;
-    margin-top: 10px;
-    min-height: 1.2em;
-  }
-
   footer {
     text-align: center;
     color: var(--muted);
@@ -276,39 +185,76 @@
 
 <script>
   // --- Configuration -------------------------------------------------------
-  // Each entry: { title: 'display name', password: '...', page: 'page URL' }
+  // Page metadata (no passwords stored here - those are hashed in .passwords.json)
   const PAGES = [
-    { title: 'Page 01', password: 'alpha-4827-quasar'   , page: 'file-01.html' },
-    { title: 'Page 02', password: 'bravo-9153-tundra'   , page: 'file-02.html' },
-    { title: 'Page 03', password: 'cipher-2604-ember'   , page: 'file-03.html' },
-    { title: 'Page 04', password: 'delta-7381-river'    , page: 'file-04.html' },
-    { title: 'Page 05', password: 'echo-5096-canyon'    , page: 'file-05.html' },
-    { title: 'Page 06', password: 'falcon-1247-meadow'  , page: 'file-06.html' },
-    { title: 'Page 07', password: 'golf-8653-storm'     , page: 'file-07.html' },
-    { title: 'Page 08', password: 'harbor-3419-arctic'  , page: 'file-08.html' },
-    { title: 'Page 09', password: 'iris-6028-sunset'    , page: 'file-09.html' },
-    { title: 'Page 10', password: 'jaguar-1594-forest'  , page: 'file-10.html' },
-    { title: 'Page 11', password: 'kilo-4872-velvet'    , page: 'file-11.html' },
-    { title: 'Page 12', password: 'lima-7305-harbor'    , page: 'file-12.html' },
-    { title: 'Page 13', password: 'meteor-2168-cobalt'  , page: 'file-13.html' },
-    { title: 'Page 14', password: 'nova-8941-flame'     , page: 'file-14.html' },
-    { title: 'Page 15', password: 'oscar-3726-winter'   , page: 'file-15.html' },
-    { title: 'Page 16', password: 'panther-6519-summit' , page: 'file-16.html' },
-    { title: 'Page 17', password: 'quartz-9284-breeze'  , page: 'file-17.html' },
-    { title: 'Page 18', password: 'raven-2837-crystal'  , page: 'file-18.html' },
-    { title: 'Page 19', password: 'summit-5461-garden'  , page: 'file-19.html' },
-    { title: 'Page 20', password: 'tundra-7092-cosmic'  , page: 'file-20.html' },
-    { title: 'Page 21', password: 'ultra-1358-walnut'   , page: 'file-21.html' },
-    { title: 'Page 22', password: 'vortex-4823-amber'   , page: 'file-22.html' },
-    { title: 'Page 23', password: 'willow-8671-crimson' , page: 'file-23.html' },
-    { title: 'Page 24', password: 'xenon-2946-sapphire' , page: 'file-24.html' },
-    { title: 'Page 25', password: 'yonder-6517-cedar'   , page: 'file-25.html' },
-    { title: 'Page 26', password: 'zenith-9285-magnolia', page: 'file-26.html' },
-    { title: 'Page 27', password: 'apex-3694-thunder'   , page: 'file-27.html' },
-    { title: 'Page 28', password: 'bramble-7528-harvest', page: 'file-28.html' },
-    { title: 'Page 29', password: 'cobalt-1846-starlight', page: 'file-29.html' },
-    { title: 'Page 30', password: 'drift-9073-cascade'  , page: 'file-30.html' },
+    { title: 'Page 01', page: 'file-01.html' },
+    { title: 'Page 02', page: 'file-02.html' },
+    { title: 'Page 03', page: 'file-03.html' },
+    { title: 'Page 04', page: 'file-04.html' },
+    { title: 'Page 05', page: 'file-05.html' },
+    { title: 'Page 06', page: 'file-06.html' },
+    { title: 'Page 07', page: 'file-07.html' },
+    { title: 'Page 08', page: 'file-08.html' },
+    { title: 'Page 09', page: 'file-09.html' },
+    { title: 'Page 10', page: 'file-10.html' },
+    { title: 'Page 11', page: 'file-11.html' },
+    { title: 'Page 12', page: 'file-12.html' },
+    { title: 'Page 13', page: 'file-13.html' },
+    { title: 'Page 14', page: 'file-14.html' },
+    { title: 'Page 15', page: 'file-15.html' },
+    { title: 'Page 16', page: 'file-16.html' },
+    { title: 'Page 17', page: 'file-17.html' },
+    { title: 'Page 18', page: 'file-18.html' },
+    { title: 'Page 19', page: 'file-19.html' },
+    { title: 'Page 20', page: 'file-20.html' },
+    { title: 'Page 21', page: 'file-21.html' },
+    { title: 'Page 22', page: 'file-22.html' },
+    { title: 'Page 23', page: 'file-23.html' },
+    { title: 'Page 24', page: 'file-24.html' },
+    { title: 'Page 25', page: 'file-25.html' },
+    { title: 'Page 26', page: 'file-26.html' },
+    { title: 'Page 27', page: 'file-27.html' },
+    { title: 'Page 28', page: 'file-28.html' },
+    { title: 'Page 29', page: 'file-29.html' },
+    { title: 'Page 30', page: 'file-30.html' },
   ];
+
+  // --- Password hashing utilities -----------------------------------------
+  // Hash a password using SHA-256 via Web Crypto API
+  async function hashPassword(userInput) {
+    const encoder = new TextEncoder();
+    const data = encoder.encode(userInput);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+  }
+
+  // Load hashed passwords from .passwords.json
+  let passwordHashes = {};
+  async function loadPasswordHashes() {
+    try {
+      const response = await fetch('.passwords.json');
+      if (!response.ok) throw new Error('Failed to load password hashes');
+      const data = await response.json();
+      data.entries.forEach(entry => {
+        passwordHashes[entry.page] = entry.hash;
+      });
+    } catch (error) {
+      console.error('Error loading password hashes:', error);
+      passwordHashes = {};
+    }
+  }
+
+  // Verify password for a given page
+  async function verifyPassword(pageUrl, inputPassword) {
+    const storedHash = passwordHashes[pageUrl];
+    if (!storedHash) {
+      console.warn(`No password hash found for ${pageUrl}`);
+      return false;
+    }
+    const inputHash = await hashPassword(inputPassword);
+    return inputHash === storedHash;
+  }
 
   // --- Render --------------------------------------------------------------
   const grid = document.getElementById('grid');
@@ -342,6 +288,11 @@
 
   filterInput.addEventListener('input', render);
   render();
+
+  // Load password hashes on page initialization
+  loadPasswordHashes().then(() => {
+    console.log('Password hashes loaded successfully');
+  });
 
 </script>
 

@@ -111,7 +111,7 @@
 </footer>
 <script>
   (function () {
-    var PASSWORD = "xenon-2946-sapphire";
+    var PASSWORD_HASH = "c63a6138e5214fc0dac9e9382a6ce1d43958d82aa53ac7a1c5a1a06c7dd21acd";
     var pw = document.getElementById("pw");
     var msg = document.getElementById("msg");
     var unlockBtn = document.getElementById("unlock-btn");
@@ -120,16 +120,21 @@
     var gate = document.getElementById("gate");
 
     function tryUnlock() {
-      if (pw.value === PASSWORD) {
-        msg.textContent = "";
-        msg.className = "msg";
-        gate.style.display = "none";
-        reveal.classList.add("open");
-      } else {
-        msg.textContent = "Incorrect password. Please try again.";
-        msg.className = "msg error";
-        pw.select();
-      }
+      var input = pw.value;
+      crypto.subtle.digest("SHA-256", new TextEncoder().encode(input)).then(function(hashBuffer) {
+        var hashArray = Array.from(new Uint8Array(hashBuffer));
+        var inputHash = hashArray.map(function(b) { return b.toString(16).padStart(2, "0"); }).join("");
+        if (inputHash === PASSWORD_HASH) {
+          msg.textContent = "";
+          msg.className = "msg";
+          gate.style.display = "none";
+          reveal.classList.add("open");
+        } else {
+          msg.textContent = "Incorrect password. Please try again.";
+          msg.className = "msg error";
+          pw.select();
+        }
+      });
     }
 
     unlockBtn.addEventListener("click", tryUnlock);

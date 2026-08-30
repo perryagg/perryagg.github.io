@@ -111,7 +111,7 @@
 </footer>
 <script>
   (function () {
-    var PASSWORD = "willow-8671-crimson";
+    var PASSWORD_HASH = "262542d70e58c7027a85f13b0eda5faa71be838c6bc9f8314f52bc4611648736";
     var pw = document.getElementById("pw");
     var msg = document.getElementById("msg");
     var unlockBtn = document.getElementById("unlock-btn");
@@ -120,16 +120,21 @@
     var gate = document.getElementById("gate");
 
     function tryUnlock() {
-      if (pw.value === PASSWORD) {
-        msg.textContent = "";
-        msg.className = "msg";
-        gate.style.display = "none";
-        reveal.classList.add("open");
-      } else {
-        msg.textContent = "Incorrect password. Please try again.";
-        msg.className = "msg error";
-        pw.select();
-      }
+      var input = pw.value;
+      crypto.subtle.digest("SHA-256", new TextEncoder().encode(input)).then(function(hashBuffer) {
+        var hashArray = Array.from(new Uint8Array(hashBuffer));
+        var inputHash = hashArray.map(function(b) { return b.toString(16).padStart(2, "0"); }).join("");
+        if (inputHash === PASSWORD_HASH) {
+          msg.textContent = "";
+          msg.className = "msg";
+          gate.style.display = "none";
+          reveal.classList.add("open");
+        } else {
+          msg.textContent = "Incorrect password. Please try again.";
+          msg.className = "msg error";
+          pw.select();
+        }
+      });
     }
 
     unlockBtn.addEventListener("click", tryUnlock);

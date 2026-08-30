@@ -111,7 +111,7 @@
 </footer>
 <script>
   (function () {
-    var PASSWORD = "jaguar-1594-forest";
+    var PASSWORD_HASH = "93c961a71f27e85e45ff438ab4d47a973da8462cea8dd06cd711234bb8da0386";
     var pw = document.getElementById("pw");
     var msg = document.getElementById("msg");
     var unlockBtn = document.getElementById("unlock-btn");
@@ -120,16 +120,21 @@
     var gate = document.getElementById("gate");
 
     function tryUnlock() {
-      if (pw.value === PASSWORD) {
-        msg.textContent = "";
-        msg.className = "msg";
-        gate.style.display = "none";
-        reveal.classList.add("open");
-      } else {
-        msg.textContent = "Incorrect password. Please try again.";
-        msg.className = "msg error";
-        pw.select();
-      }
+      var input = pw.value;
+      crypto.subtle.digest("SHA-256", new TextEncoder().encode(input)).then(function(hashBuffer) {
+        var hashArray = Array.from(new Uint8Array(hashBuffer));
+        var inputHash = hashArray.map(function(b) { return b.toString(16).padStart(2, "0"); }).join("");
+        if (inputHash === PASSWORD_HASH) {
+          msg.textContent = "";
+          msg.className = "msg";
+          gate.style.display = "none";
+          reveal.classList.add("open");
+        } else {
+          msg.textContent = "Incorrect password. Please try again.";
+          msg.className = "msg error";
+          pw.select();
+        }
+      });
     }
 
     unlockBtn.addEventListener("click", tryUnlock);
