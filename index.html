@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Protected Downloads</title>
+<title>Protected Pages</title>
 <style>
   :root {
     --bg: #0f172a;
@@ -270,20 +270,6 @@
   <div class="download-grid" id="grid"></div>
 </main>
 
-<div class="modal-backdrop" id="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
-  <div class="modal">
-    <h2 id="modal-title">Enter password</h2>
-    <div class="modal-subtitle" id="modal-subtitle"></div>
-    <label for="pw">Password</label>
-    <input type="password" id="pw" autocomplete="off" />
-    <div class="error" id="msg"></div>
-    <div class="modal-actions">
-      <button class="btn-secondary" id="cancel-btn">Cancel</button>
-      <button class="download-btn" id="submit-btn">Download</button>
-    </div>
-  </div>
-</div>
-
 <footer>
   Each card links to a separate password-gated page.
 </footer>
@@ -357,22 +343,6 @@
   filterInput.addEventListener('input', render);
   render();
 
-  // --- Modal & password check (unused on the index page) -------------------
-  // Each file now lives on its own page; this script intentionally no-ops.
-  const modal = document.getElementById('modal');
-  const subtitle = document.getElementById('modal-subtitle');
-  const pwInput = document.getElementById('pw');
-  const msg = document.getElementById('msg');
-  const submitBtn = document.getElementById('submit-btn');
-  const cancelBtn = document.getElementById('cancel-btn');
-  let activeIdx = -1;
-
-  function openModal(_idx) { /* no-op */ }
-  function closeModal() { /* no-op */ }
-  function tryDownload() { /* no-op */ }
-
-  if (submitBtn) submitBtn.addEventListener('click', tryDownload);
-  if (cancelBtn) cancelBtn.addEventListener('click', closeModal);
 </script>
 
 </body>

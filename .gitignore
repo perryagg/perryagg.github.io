@@ -1,0 +1,2 @@
+# Password files - never commit these
+.passwords-plain.json
