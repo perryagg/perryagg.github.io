@@ -254,8 +254,8 @@
 <body>
 
 <header>
-  <h1>Protected Downloads</h1>
-  <p>30 files, each on its own password-gated page</p>
+  <h1>Protected Pages</h1>
+  <p>30 pages, each gated by its own password</p>
 </header>
 
 <div class="security-notice">
@@ -290,39 +290,38 @@
 
 <script>
   // --- Configuration -------------------------------------------------------
-  // Each entry: { file: 'relative path', name: 'display name', password: '...' }
-  // Replace the file paths with your own files in a /files/ folder.
-  const DOWNLOADS = [
-    { file: 'files/file-01.pdf',  name: 'file-01.pdf',  password: 'alpha-4827-quasar'   , page: 'file-01.html' },
-    { file: 'files/file-02.pdf',  name: 'file-02.pdf',  password: 'bravo-9153-tundra'   , page: 'file-02.html' },
-    { file: 'files/file-03.pdf',  name: 'file-03.pdf',  password: 'cipher-2604-ember'   , page: 'file-03.html' },
-    { file: 'files/file-04.pdf',  name: 'file-04.pdf',  password: 'delta-7381-river'    , page: 'file-04.html' },
-    { file: 'files/file-05.pdf',  name: 'file-05.pdf',  password: 'echo-5096-canyon'    , page: 'file-05.html' },
-    { file: 'files/file-06.pdf',  name: 'file-06.pdf',  password: 'falcon-1247-meadow'  , page: 'file-06.html' },
-    { file: 'files/file-07.pdf',  name: 'file-07.pdf',  password: 'golf-8653-storm'     , page: 'file-07.html' },
-    { file: 'files/file-08.pdf',  name: 'file-08.pdf',  password: 'harbor-3419-arctic'  , page: 'file-08.html' },
-    { file: 'files/file-09.pdf',  name: 'file-09.pdf',  password: 'iris-6028-sunset'    , page: 'file-09.html' },
-    { file: 'files/file-10.pdf',  name: 'file-10.pdf',  password: 'jaguar-1594-forest'  , page: 'file-10.html' },
-    { file: 'files/file-11.pdf',  name: 'file-11.pdf',  password: 'kilo-4872-velvet'    , page: 'file-11.html' },
-    { file: 'files/file-12.pdf',  name: 'file-12.pdf',  password: 'lima-7305-harbor'    , page: 'file-12.html' },
-    { file: 'files/file-13.pdf',  name: 'file-13.pdf',  password: 'meteor-2168-cobalt'  , page: 'file-13.html' },
-    { file: 'files/file-14.pdf',  name: 'file-14.pdf',  password: 'nova-8941-flame'     , page: 'file-14.html' },
-    { file: 'files/file-15.pdf',  name: 'file-15.pdf',  password: 'oscar-3726-winter'   , page: 'file-15.html' },
-    { file: 'files/file-16.pdf',  name: 'file-16.pdf',  password: 'panther-6519-summit' , page: 'file-16.html' },
-    { file: 'files/file-17.pdf',  name: 'file-17.pdf',  password: 'quartz-9284-breeze'  , page: 'file-17.html' },
-    { file: 'files/file-18.pdf',  name: 'file-18.pdf',  password: 'raven-2837-crystal'  , page: 'file-18.html' },
-    { file: 'files/file-19.pdf',  name: 'file-19.pdf',  password: 'summit-5461-garden'  , page: 'file-19.html' },
-    { file: 'files/file-20.pdf',  name: 'file-20.pdf',  password: 'tundra-7092-cosmic'  , page: 'file-20.html' },
-    { file: 'files/file-21.pdf',  name: 'file-21.pdf',  password: 'ultra-1358-walnut'   , page: 'file-21.html' },
-    { file: 'files/file-22.pdf',  name: 'file-22.pdf',  password: 'vortex-4823-amber'   , page: 'file-22.html' },
-    { file: 'files/file-23.pdf',  name: 'file-23.pdf',  password: 'willow-8671-crimson' , page: 'file-23.html' },
-    { file: 'files/file-24.pdf',  name: 'file-24.pdf',  password: 'xenon-2946-sapphire' , page: 'file-24.html' },
-    { file: 'files/file-25.pdf',  name: 'file-25.pdf',  password: 'yonder-6517-cedar'   , page: 'file-25.html' },
-    { file: 'files/file-26.pdf',  name: 'file-26.pdf',  password: 'zenith-9285-magnolia', page: 'file-26.html' },
-    { file: 'files/file-27.pdf',  name: 'file-27.pdf',  password: 'apex-3694-thunder'   , page: 'file-27.html' },
-    { file: 'files/file-28.pdf',  name: 'file-28.pdf',  password: 'bramble-7528-harvest', page: 'file-28.html' },
-    { file: 'files/file-29.pdf',  name: 'file-29.pdf',  password: 'cobalt-1846-starlight', page: 'file-29.html' },
-    { file: 'files/file-30.pdf',  name: 'file-30.pdf',  password: 'drift-9073-cascade'  , page: 'file-30.html' },
+  // Each entry: { name: 'display name', password: '...', page: 'page URL' }
+  const PAGES = [
+    { name: 'file-01.pdf', password: 'alpha-4827-quasar'   , page: 'file-01.html' },
+    { name: 'file-02.pdf', password: 'bravo-9153-tundra'   , page: 'file-02.html' },
+    { name: 'file-03.pdf', password: 'cipher-2604-ember'   , page: 'file-03.html' },
+    { name: 'file-04.pdf', password: 'delta-7381-river'    , page: 'file-04.html' },
+    { name: 'file-05.pdf', password: 'echo-5096-canyon'    , page: 'file-05.html' },
+    { name: 'file-06.pdf', password: 'falcon-1247-meadow'  , page: 'file-06.html' },
+    { name: 'file-07.pdf', password: 'golf-8653-storm'     , page: 'file-07.html' },
+    { name: 'file-08.pdf', password: 'harbor-3419-arctic'  , page: 'file-08.html' },
+    { name: 'file-09.pdf', password: 'iris-6028-sunset'    , page: 'file-09.html' },
+    { name: 'file-10.pdf', password: 'jaguar-1594-forest'  , page: 'file-10.html' },
+    { name: 'file-11.pdf', password: 'kilo-4872-velvet'    , page: 'file-11.html' },
+    { name: 'file-12.pdf', password: 'lima-7305-harbor'    , page: 'file-12.html' },
+    { name: 'file-13.pdf', password: 'meteor-2168-cobalt'  , page: 'file-13.html' },
+    { name: 'file-14.pdf', password: 'nova-8941-flame'     , page: 'file-14.html' },
+    { name: 'file-15.pdf', password: 'oscar-3726-winter'   , page: 'file-15.html' },
+    { name: 'file-16.pdf', password: 'panther-6519-summit' , page: 'file-16.html' },
+    { name: 'file-17.pdf', password: 'quartz-9284-breeze'  , page: 'file-17.html' },
+    { name: 'file-18.pdf', password: 'raven-2837-crystal'  , page: 'file-18.html' },
+    { name: 'file-19.pdf', password: 'summit-5461-garden'  , page: 'file-19.html' },
+    { name: 'file-20.pdf', password: 'tundra-7092-cosmic'  , page: 'file-20.html' },
+    { name: 'file-21.pdf', password: 'ultra-1358-walnut'   , page: 'file-21.html' },
+    { name: 'file-22.pdf', password: 'vortex-4823-amber'   , page: 'file-22.html' },
+    { name: 'file-23.pdf', password: 'willow-8671-crimson' , page: 'file-23.html' },
+    { name: 'file-24.pdf', password: 'xenon-2946-sapphire' , page: 'file-24.html' },
+    { name: 'file-25.pdf', password: 'yonder-6517-cedar'   , page: 'file-25.html' },
+    { name: 'file-26.pdf', password: 'zenith-9285-magnolia', page: 'file-26.html' },
+    { name: 'file-27.pdf', password: 'apex-3694-thunder'   , page: 'file-27.html' },
+    { name: 'file-28.pdf', password: 'bramble-7528-harvest', page: 'file-28.html' },
+    { name: 'file-29.pdf', password: 'cobalt-1846-starlight', page: 'file-29.html' },
+    { name: 'file-30.pdf', password: 'drift-9073-cascade'  , page: 'file-30.html' },
   ];
 
   // --- Render --------------------------------------------------------------
@@ -334,7 +333,7 @@
     grid.innerHTML = '';
     const term = filterInput.value.trim().toLowerCase();
     let shown = 0;
-    DOWNLOADS.forEach((item, idx) => {
+    PAGES.forEach((item, idx) => {
       const matches = !term || item.name.toLowerCase().includes(term);
       const card = document.createElement('div');
       card.className = 'card' + (matches ? '' : ' hidden');
@@ -352,7 +351,7 @@
       grid.appendChild(card);
       if (matches) shown++;
     });
-    countEl.textContent = `${shown} of ${DOWNLOADS.length} files`;
+    countEl.textContent = `${shown} of ${PAGES.length} files`;
   }
 
   filterInput.addEventListener('input', render);
