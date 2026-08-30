@@ -81,7 +81,35 @@ function main() {
 
   fs.writeFileSync(outputPath, JSON.stringify(outputData, null, 2) + '\n');
   console.log(`\n✓ Successfully wrote hashed passwords to ${HASHED_PASSWORD_FILE}`);
-  console.log(`  Remember: ${passwordFile} should never be committed to git!`);
+
+  // Update HTML files with new hashes
+  console.log('\nUpdating HTML files with new password hashes...');
+  const repoRoot = path.join(__dirname, '..');
+  let updatedCount = 0;
+
+  hashedEntries.forEach(entry => {
+    const htmlPath = path.join(repoRoot, entry.page);
+    if (!fs.existsSync(htmlPath)) {
+      console.warn(`  ⚠ Skipping ${entry.page} (not found)`);
+      return;
+    }
+
+    let content = fs.readFileSync(htmlPath, 'utf8');
+    const hashPattern = /var PASSWORD_HASH = "[a-f0-9]+";/;
+
+    if (hashPattern.test(content)) {
+      content = content.replace(hashPattern, `var PASSWORD_HASH = "${entry.hash}";`);
+      fs.writeFileSync(htmlPath, content);
+      updatedCount++;
+      console.log(`  ✓ Updated ${entry.page}`);
+    } else {
+      console.warn(`  ⚠ No PASSWORD_HASH found in ${entry.page}`);
+    }
+  });
+
+  console.log(`\n✓ Updated ${updatedCount} HTML file(s)`);
+  console.log(`\n  Remember: ${passwordFile} should never be committed to git!`);
+  console.log(`  Commit .passwords.json and updated HTML files only.`);
 }
 
 main();

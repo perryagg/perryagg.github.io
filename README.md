@@ -1,57 +1,113 @@
 # perryagg.github.io
 
-Protected pages with SHA-256 password hashing.
+Static site with 30 password-protected pages using SHA-256 hashing.
 
-## Password Management
+## Overview
 
-### Setup
+Each page is gated by its own password. Passwords are stored as SHA-256 hashes — plain-text passwords never appear in the repository.
 
-Passwords are stored in two files:
+## How Password Hashing Works
 
-1. **`.passwords-plain.json`** - Plain-text passwords (gitignored, never commit!)
-2. **`.passwords.json`** - SHA-256 hashed passwords (committed to repo)
+```
+User enters password
+        ↓
+SHA-256 hash in browser (Web Crypto API)
+        ↓
+Compare against stored hash
+        ↓
+Grant access if match
+```
 
-### Adding/Updating Passwords
+Plain-text passwords → hashed locally → only hashes are committed.
 
-1. Edit `.passwords-plain.json` with your plain-text passwords:
-   ```json
-   {
-     "entries": [
-       { "page": "file-01.html", "password": "my-new-password" },
-       { "page": "file-02.html", "password": "another-password" }
-     ]
-   }
-   ```
+## Setup
 
-2. Generate hashes by running:
-   ```bash
-   node scripts/hash-passwords.js
-   ```
+### Prerequisites
 
-3. Commit the updated `.passwords.json` file:
-   ```bash
-   git add .passwords.json
-   git commit -m "Update password hashes"
-   ```
+- Node.js (any recent version)
 
-### Security Notes
+### Files
 
-- ⚠️ **Never commit** `.passwords-plain.json` - it's in `.gitignore`
-- Passwords are hashed using SHA-256 before storage
-- The hashed file can be safely committed to the repository
-- Keep `.passwords-plain.json` secure and backed up separately
+| File | Purpose | Committed? |
+|------|---------|------------|
+| `.passwords-plain.json` | Plain-text passwords (source of truth) | ❌ No (gitignored) |
+| `.passwords.json` | SHA-256 hashed passwords | ✅ Yes |
+| `file-XX.html` | Protected pages with embedded hash | ✅ Yes |
+
+## Usage
+
+### 1. Set or change passwords
+
+Edit `.passwords-plain.json`:
+
+```json
+{
+  "entries": [
+    { "page": "file-01.html", "password": "my-secret-password" },
+    { "page": "file-02.html", "password": "another-password" }
+  ]
+}
+```
+
+### 2. Generate hashes and update everything
+
+Run a single command — it updates both `.passwords.json` and all HTML files:
+
+```bash
+node scripts/hash-passwords.js
+```
+
+Output:
+```
+✓ Successfully wrote hashed passwords to .passwords.json
+✓ Updated 30 HTML file(s)
+```
+
+### 3. Commit the changes
+
+```bash
+git add .passwords.json file-*.html
+git commit -m "Update password hashes"
+```
+
+**Never commit** `.passwords-plain.json` — it's already in `.gitignore`.
 
 ## Scripts
 
-- `node scripts/hash-passwords.js` - Convert plain-text passwords to SHA-256 hashes
-- `node scripts/update-html-files.js` - Update HTML files with new password hashes
-- `node scripts/fix-files.js` - Fix syntax errors in HTML files
+| Script | Purpose |
+|--------|---------|
+| `node scripts/hash-passwords.js` | Hash passwords and update `.passwords.json` + all HTML files |
+| `node scripts/update-html-files.js` | One-time migration: replace plain-text passwords with hashes in HTML |
+| `node scripts/fix-files.js` | Fix duplicate event listener syntax errors in HTML files |
 
-## How It Works
+## Security
 
-1. Users enter passwords on protected pages
-2. The entered password is hashed using SHA-256 (via Web Crypto API)
-3. The hash is compared against the stored hash in `.passwords.json`
-4. Access is granted only if the hashes match
+- **Algorithm:** SHA-256 via Web Crypto API (`crypto.subtle.digest`)
+- **Hashes stored:** 64-character hex strings in `.passwords.json` and embedded in HTML
+- **Plain-text storage:** Only in `.passwords-plain.json` (local, gitignored)
+- **Browser-side:** Passwords are hashed in the browser before comparison — plain text never leaves the user's machine for verification
 
-This ensures plain-text passwords are never stored in the repository.
+## Caveats
+
+- This is a static site. The HTML source (including hashes) is publicly visible.
+- SHA-256 without salt is fast to brute-force for weak passwords. Use long, high-entropy passwords.
+- This scheme is suitable for low-sensitivity distribution (e.g. sharing with a small known group), as noted on the index page.
+
+## Project Structure
+
+```
+.
+├── index.html              # Landing page with card grid
+├── file-01.html            # Protected page (password-gated)
+├── file-02.html
+├── ...
+├── file-30.html
+├── .passwords.json         # SHA-256 hashes (committed)
+├── .passwords-plain.json   # Plain-text passwords (gitignored)
+├── .gitignore
+├── README.md
+└── scripts/
+    ├── hash-passwords.js
+    ├── update-html-files.js
+    └── fix-files.js
+```
