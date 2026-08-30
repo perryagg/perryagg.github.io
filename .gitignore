@@ -1,2 +1,6 @@
 # Password files - never commit these
 .passwords-plain.json
+
+# Build artifacts and secret material
+scripts/secrets.json
+secrets.json

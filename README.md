@@ -1,130 +1,135 @@
 # perryagg.github.io
 
-Static site with 30 password-protected pages using SHA-256 hashing.
+Static site using **Blind Key Derivation (Double-Hashing)**. Each protected
+page is an AES-256-GCM-encrypted JSON payload, fetched and decrypted in the
+browser using a SecretKey supplied via the URL hash. The SecretKey never
+appears in the public repository — only the SHA-256 of the SecretKey
+appears, and only as the filename of an opaque ciphertext blob.
 
-## Overview
-
-Each page is gated by its own password. Passwords are stored as SHA-256 hashes — plain-text passwords never appear in the repository.
-
-## How Password Hashing Works
-
-```
-User enters password
-        ↓
-SHA-256 hash in browser (Web Crypto API)
-        ↓
-Compare against stored hash
-        ↓
-Grant access if match
-```
-
-Plain-text passwords → hashed locally → only hashes are committed.
-
-## Direct Hash URLs
-
-Any 64-character SHA-256 hash in the URL path resolves directly to its page:
+## How It Works
 
 ```
-https://perryagg.github.io/<hash>  →  file-XX.html (password-gated)
+User visits  https://yoursite.github.io/#<SecretKey>
+                      │
+                      ▼
+index.html (SPA) reads location.hash → SecretKey
+                      │
+        ┌─────────────┴─────────────┐
+        │                           │
+   SHA-256(SecretKey)         AES-256-GCM key
+   → storage filename         ← padded/truncated
+   data/<hash>.json              UTF-8 bytes
+        │                           │
+        └─────────────┬─────────────┘
+                      │
+                      ▼
+   fetch ./data/<hash>.json
+   decrypt with SecretKey
+   innerHTML the plaintext
 ```
 
-This works via a `404.html` redirector that:
+### Why this is safer than a public hash
 
-1. Reads the last path segment from `location.pathname`.
-2. Validates it as a 64-char hex string.
-3. Looks it up (case-insensitive) in `passwords.json` and redirects to the
-   matching `file-XX.html`.
+- **The URL is secret.** The repository only contains `data/<hash>.json`
+  filenames. SHA-256 is one-way, so an attacker who browses the repo
+  cannot reverse a filename back into the SecretKey.
+- **The content is encrypted.** Even if they download every file in
+  `data/`, the contents are random ciphertext without the SecretKey.
+- **The link form `/#SecretKey` keeps the key client-side only.** The hash
+  fragment is never sent to the server, so it never appears in server
+  logs, GitHub Pages access logs, or the browser history sent over the
+  wire.
 
-Unknown hashes show a "Hash not recognized" message with a link back to the
-index. The redirector is read-only — it does not modify the JSON or any
-`file-XX.html` page.
+## Link Format
 
-## Setup
+| Form | Status |
+| --- | --- |
+| `yoursite.github.io/#<SecretKey>` | ✅ Supported — opens the matching page |
+| `yoursite.github.io/#` (empty) | Shows the access-key prompt |
+| `yoursite.github.io/<64-hex>` (legacy) | ❌ Deprecated — `404.html` shows a notice |
 
-### Prerequisites
-
-- Node.js (any recent version)
-
-### Files
-
-| File | Purpose | Committed? |
-|------|---------|------------|
-| `.passwords-plain.json` | Plain-text passwords (source of truth) | ❌ No (gitignored) |
-| `passwords.json` | SHA-256 hashed passwords (read by every page at runtime) | ✅ Yes |
-| `file-XX.html` | Protected pages — fetch their hash from `.passwords.json` | ✅ Yes |
-| `404.html` | Hash-to-page redirector (see "Direct Hash URLs" above) | ✅ Yes |
-
-## Usage
-
-### 1. Set or change passwords
-
-Edit `.passwords-plain.json`:
-
-```json
-{
-  "entries": [
-    { "page": "file-01.html", "password": "my-secret-password" },
-    { "page": "file-02.html", "password": "another-password" }
-  ]
-}
-```
-
-### 2. Generate hashes
-
-```bash
-node scripts/hash-passwords.js
-```
-
-Output:
-```
-✓ Successfully wrote hashed passwords to .passwords.json
-```
-
-The script only writes `passwords.json` — it does **not** modify any HTML file.
-Each `file-XX.html` fetches its own hash from `passwords.json` on page load, keyed
-off `location.pathname.split('/').pop()`.
-
-### 3. Commit the change
-
-```bash
-git add .passwords.json
-git commit -m "Update password hashes"
-```
-
-**Never commit** `.passwords-plain.json` — it's already in `.gitignore`.
-
-## Scripts
-
-| Script | Purpose |
-|--------|---------|Read `.passwords-plain.json`, write `.passwords.json` with SHA-256 hashds with hashes in HTML |
-| `node scripts/fix-files.js` | Fix duplicate event listener syntax errors in HTML files |
-
-## Security
-
-- **Algorithm:** SHA-256 via Web Crypto API (`crypto.subtle.digest`)
-- **Hashes stored:** 64-character hex strings in `.passwords.json` and embedded in HTML
-- **Plain-text storage:** Only in `.passwords-plain.json` (local, gitignored)
-- **Browser-side:** Passwords are hashed in the browser before comp(loaded at runtime by every page)never leaves the user's machine for verification
-
-## Caveats
-
-- This is a static site. The HTML source (including hashes) is publicly visible.
-- SHA-256 without salt is fast to brute-force for weak passwords. Use long, high-entropy passwords.
-- This scheme is suitable for low-sensitivity distribution (e.g. sharing with a small known group), as noted on the index page.
-
-## Project Structure
+## Repository Layout
 
 ```
 .
-├── index.html              # Landing page with card grid
-├── file-01.html            # Protected page (password-gated)
-├── file-02.html
-├── ...
-├── file-30.html
-├── .passwords.json         # SHA-256 hashes (committed, read at runtime)
-├── .passwords-plain.json   # Plain-text passwords (gitignored)
-├── .gitignore
+├── index.html              # Single SPA loader
+├── 404.html                # Notice for legacy direct-hash URLs
+├── data/                   # 30 encrypted JSON payloads (public)
+│   ├── <sha256>.json
+│   └── …
+├── scripts/
+│   ├── encrypt-pages.js    # Build script: produces data/*.json
+│   ├── hash-passwords.js   # Legacy SHA-256 helper (kept for reference)
+│   ├── password-verify.js  # Legacy browser verify helper (kept for reference)
+│   └── secrets.json        # Build-only sanity map (gitignored)
+├── passwords.json          # Public hash inventory (committed)
+├── .passwords-plain.json   # Plaintext SecretKeys (gitignored)
 ├── README.md
-└── scripts/
-    └── hash-passwords.js
+└── .gitignore
 ```
+
+## Build / Update
+
+### Prerequisites
+- Node.js (any recent version)
+
+### 1. Edit `.passwords-plain.json`
+```json
+{
+  "entries": [
+    { "page": "file-01.html", "password": "alpha-8162-coral" },
+    { "page": "file-02.html", "password": "another-secret-key" }
+  ]
+}
+```
+The `password` field is the SecretKey.
+
+### 2. Generate encrypted payloads
+```bash
+node scripts/encrypt-pages.js
+```
+This writes 30 files into `data/<sha256(secretKey)>.json` and a local
+`scripts/secrets.json` sanity map (gitignored).
+
+### 3. Commit and push
+```bash
+git add data/ passwords.json
+git commit -m "Update encrypted payloads"
+git push
+```
+
+### 4. Distribute the link
+Share `https://yoursite.github.io/#<SecretKey>` with the authorized user
+out-of-band (Signal, email, etc.). Never commit the SecretKey.
+
+## Security
+
+- **Algorithm:** AES-256-GCM with a fresh random 12-byte IV per file.
+- **Key derivation:** `key = utf8(SecretKey).pad(0x30).slice(0, 32)`.
+- **Storage hash:** SHA-256 of the SecretKey (hex-encoded) → filename.
+- **No secret material in the repo.** Only ciphertext + IV are committed.
+- **HTTPS required.** `crypto.subtle` is only available on secure origins
+  (GitHub Pages enforces HTTPS).
+
+### Caveats
+- This is a static site. The link form `yoursite/#SecretKey` is the only
+  secret — anyone who learns the link can read the page. Treat the link
+  like a password.
+- SHA-256 is fast to brute-force for low-entropy SecretKeys. Use
+  high-entropy keys (`word-1234-word` style is fine; dictionary words
+  alone are not).
+- Once published, an encrypted payload at `data/<hash>.json` is
+  effectively immutable. To rotate a SecretKey, change it in
+  `.passwords-plain.json`, re-run `encrypt-pages.js`, and share the new
+  link. The old filename stays in the repo (it's ciphertext; no harm)
+  but the old link will no longer decrypt.
+
+## Local Preview
+
+```bash
+npx http-server
+# then open http://localhost:8080/#alpha-8162-coral
+```
+
+(The exact SecretKey to use is whichever one you put in
+`.passwords-plain.json` for `file-01.html`.)
