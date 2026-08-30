@@ -1,14 +1,10 @@
 # /files folder
 
-Drop your 30 download files in this folder using the exact names referenced in
-the per-file pages (e.g. `file-01.html` for `file-01.pdf`).
+This folder is no longer used by the site.
 
-Each file has its own dedicated page at the site root:
-
-- `file-01.html` … `file-30.html`
-
-Every page asks for a password. The passwords are defined in each page's
-`<script>` block (`var PASSWORD = "..."`) and must match the list below.
+The site used to serve downloadable files from here, but downloads have been
+removed. Each entry on the index page now links to a separate password-gated
+web page (`file-01.html` … `file-30.html`) instead of a file in this folder.
 
 Default expected filenames:
 
