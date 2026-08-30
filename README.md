@@ -59,6 +59,7 @@ index.html (SPA) reads location.hash → SecretKey
 │   └── …
 ├── scripts/
 │   ├── encrypt-pages.js    # Build script: produces data/*.json
+│   ├── verify-roundtrip.js # Build-time sanity check (decrypts every payload)
 │   ├── hash-passwords.js   # Legacy SHA-256 helper (kept for reference)
 │   ├── password-verify.js  # Legacy browser verify helper (kept for reference)
 │   └── secrets.json        # Build-only sanity map (gitignored)
@@ -87,13 +88,15 @@ The `password` field is the SecretKey.
 ### 2. Generate encrypted payloads
 ```bash
 node scripts/encrypt-pages.js
+node scripts/verify-roundtrip.js
 ```
-This writes 30 files into `data/<sha256(secretKey)>.json` and a local
-`scripts/secrets.json` sanity map (gitignored).
+The first writes 30 files into `data/<sha256(secretKey)>.json` and a local
+`scripts/secrets.json` sanity map (gitignored). The second decrypts every
+payload to confirm a clean round-trip (should print `30 pass, 0 fail`).
 
 ### 3. Commit and push
 ```bash
-git add data/ passwords.json
+git add data/ passwords.json index.html 404.html README.md
 git commit -m "Update encrypted payloads"
 git push
 ```

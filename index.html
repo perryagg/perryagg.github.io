@@ -1,302 +1,181 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Protected Pages</title>
-<style>
-  :root {
-    --bg: #0f172a;
-    --panel: #1e293b;
-    --panel-2: #273449;
-    --text: #e2e8f0;
-    --muted: #94a3b8;
-    --accent: #38bdf8;
-    --accent-hover: #0ea5e9;
-    --danger: #f87171;
-    --success: #4ade80;
-    --border: #334155;
-  }
-
-  * { box-sizing: border-box; }
-
-  html, body {
-    margin: 0;
-    padding: 0;
-    background: var(--bg);
-    color: var(--text);
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    line-height: 1.5;
-    min-height: 100vh;
-  }
-
-  header {
-    padding: 48px 24px 24px;
-    text-align: center;
-    border-bottom: 1px solid var(--border);
-  }
-
-  header h1 {
-    margin: 0 0 8px;
-    font-size: 2rem;
-    letter-spacing: -0.02em;
-  }
-
-  header p {
-    margin: 0;
-    color: var(--muted);
-  }
-
-  .security-notice {
-    max-width: 760px;
-    margin: 24px auto;
-    padding: 14px 18px;
-    background: rgba(248, 113, 113, 0.08);
-    border: 1px solid rgba(248, 113, 113, 0.35);
-    border-radius: 10px;
-    color: #fecaca;
-    font-size: 0.92rem;
-  }
-
-  .security-notice strong { color: var(--danger); }
-
-  main {
-    max-width: 960px;
-    margin: 0 auto;
-    padding: 32px 24px 64px;
-  }
-
-  .toolbar {
-    display: flex;
-    gap: 12px;
-    flex-wrap: wrap;
-    margin-bottom: 18px;
-    align-items: center;
-  }
-
-  .toolbar input[type="search"] {
-    flex: 1 1 220px;
-    background: var(--panel);
-    color: var(--text);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 10px 14px;
-    font-size: 0.95rem;
-  }
-
-  .toolbar input[type="search"]:focus {
-    outline: none;
-    border-color: var(--accent);
-  }
-
-  .count-pill {
-    background: var(--panel-2);
-    color: var(--muted);
-    border-radius: 999px;
-    padding: 6px 12px;
-    font-size: 0.85rem;
-  }
-
-  .download-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 14px;
-  }
-
-  .card {
-    background: var(--panel);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 16px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    transition: border-color 0.15s, transform 0.15s;
-  }
-
-  .card:hover { border-color: var(--accent); transform: translateY(-1px); }
-  .card.hidden { display: none; }
-
-  .card-head {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    gap: 8px;
-  }
-
-  .file-index {
-    color: var(--muted);
-    font-size: 0.78rem;
-    font-weight: 600;
-    letter-spacing: 0.05em;
-  }
-
-  .file-name {
-    font-size: 0.95rem;
-    word-break: break-all;
-    color: var(--text);
-  }
-
-  button.download-btn {
-    background: var(--accent);
-    color: #0b1220;
-    border: none;
-    border-radius: 8px;
-    padding: 9px 14px;
-    font-weight: 600;
-    cursor: pointer;
-    font-size: 0.92rem;
-    transition: background 0.15s;
-  }
-
-  button.download-btn:hover { background: var(--accent-hover); }
-  button.download-btn:active { transform: translateY(1px); }
-
-  footer {
-    text-align: center;
-    color: var(--muted);
-    font-size: 0.85rem;
-    padding: 24px 16px 40px;
-  }
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Exclusive Access</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --panel: #1e293b;
+      --panel-2: #273449;
+      --text: #e2e8f0;
+      --muted: #94a3b8;
+      --accent: #38bdf8;
+      --accent-hover: #0ea5e9;
+      --danger: #f87171;
+      --border: #334155;
+    }
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0; padding: 0;
+      background: var(--bg); color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      line-height: 1.5; min-height: 100vh;
+    }
+    main {
+      max-width: 520px; margin: 0 auto; padding: 64px 24px;
+    }
+    h1 { margin: 0 0 8px; font-size: 1.6rem; }
+    p.lead { margin: 0 0 24px; color: var(--muted); }
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 24px;
+    }
+    label { display: block; font-size: 0.85rem; color: var(--muted); margin-bottom: 6px; }
+    input[type="password"], input[type="text"] {
+      width: 100%;
+      background: var(--bg); color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 12px;
+      font-size: 1rem;
+    }
+    input:focus { outline: none; border-color: var(--accent); }
+    .actions { display: flex; gap: 8px; margin-top: 18px; }
+    button {
+      background: var(--accent); color: #0b1220;
+      border: none; border-radius: 8px;
+      padding: 10px 16px; font-weight: 600;
+      cursor: pointer; font-size: 0.95rem;
+    }
+    button:hover { background: var(--accent-hover); }
+    .msg { font-size: 0.88rem; margin-top: 12px; min-height: 1.2em; }
+    .msg.error { color: var(--danger); }
+    .status {
+      color: var(--muted); font-size: 0.9rem;
+      text-align: center; padding: 32px 0;
+    }
+    .status.error { color: var(--danger); }
+  </style>
 </head>
 <body>
+  <main>
+    <h1>Exclusive Access</h1>
+    <p class="lead">Enter your access key to load the page.</p>
 
-<header>
-  <h1>Protected Pages</h1>
-  <p>30 pages, each gated by its own password &middot; or open via a direct hash URL</p>
-</header>
+    <div class="panel" id="gate">
+      <label for="key">Access key</label>
+      <input type="password" id="key" autocomplete="off" autofocus />
+      <div class="msg" id="msg"></div>
+      <div class="actions">
+        <button id="unlock-btn" type="button">Unlock</button>
+      </div>
+    </div>
 
-<div class="security-notice">
-  <strong>Security note:</strong> This is a static site. The page URLs and passwords are visible in the page source. This scheme is suitable for low-sensitivity distribution (e.g. sharing with a small known group).
-</div>
+    <div id="app" class="status" hidden>Loading…</div>
+  </main>
 
-<main>
-  <div class="toolbar">
-    <input type="search" id="filter" placeholder="Filter pages…" aria-label="Filter pages" />
-    <span class="count-pill" id="count">30 pages</span>
-  </div>
-  <div class="download-grid" id="grid"></div>
-</main>
+  <script>
+    (function () {
+      var gate = document.getElementById("gate");
+      var keyInput = document.getElementById("key");
+      var msg = document.getElementById("msg");
+      var unlockBtn = document.getElementById("unlock-btn");
+      var app = document.getElementById("app");
 
-<footer>
-  Each card links to a separate password-gated page.
-</footer>
+      function pad32(bytes) {
+        var out = new Uint8Array(32);
+        out.set(bytes.subarray(0, 32));
+        if (bytes.length < 32) out.fill(0x30, bytes.length); // '0'
+        return out;
+      }
 
-<script>
-  // --- Configuration -------------------------------------------------------
-  // Page metadata (no passwords stored here - those are hashed in passwords.json)
-  const PAGES = [
-    { title: 'Page 01', page: 'file-01.html' },
-    { title: 'Page 02', page: 'file-02.html' },
-    { title: 'Page 03', page: 'file-03.html' },
-    { title: 'Page 04', page: 'file-04.html' },
-    { title: 'Page 05', page: 'file-05.html' },
-    { title: 'Page 06', page: 'file-06.html' },
-    { title: 'Page 07', page: 'file-07.html' },
-    { title: 'Page 08', page: 'file-08.html' },
-    { title: 'Page 09', page: 'file-09.html' },
-    { title: 'Page 10', page: 'file-10.html' },
-    { title: 'Page 11', page: 'file-11.html' },
-    { title: 'Page 12', page: 'file-12.html' },
-    { title: 'Page 13', page: 'file-13.html' },
-    { title: 'Page 14', page: 'file-14.html' },
-    { title: 'Page 15', page: 'file-15.html' },
-    { title: 'Page 16', page: 'file-16.html' },
-    { title: 'Page 17', page: 'file-17.html' },
-    { title: 'Page 18', page: 'file-18.html' },
-    { title: 'Page 19', page: 'file-19.html' },
-    { title: 'Page 20', page: 'file-20.html' },
-    { title: 'Page 21', page: 'file-21.html' },
-    { title: 'Page 22', page: 'file-22.html' },
-    { title: 'Page 23', page: 'file-23.html' },
-    { title: 'Page 24', page: 'file-24.html' },
-    { title: 'Page 25', page: 'file-25.html' },
-    { title: 'Page 26', page: 'file-26.html' },
-    { title: 'Page 27', page: 'file-27.html' },
-    { title: 'Page 28', page: 'file-28.html' },
-    { title: 'Page 29', page: 'file-29.html' },
-    { title: 'Page 30', page: 'file-30.html' },
-  ];
+      function hexOf(buf) {
+        var arr = new Uint8Array(buf);
+        var s = "";
+        for (var i = 0; i < arr.length; i++) {
+          s += arr[i].toString(16).padStart(2, "0");
+        }
+        return s;
+      }
 
-  // --- Password hashing utilities -----------------------------------------
-  // Note: Each file-XX.html derives its own key via location.pathname.split('/').pop()
-  // and fetches its hash from passwords.json on page load.
-  // Hash a password using SHA-256 via Web Crypto API
-  async function hashPassword(userInput) {
-    const encoder = new TextEncoder();
-    const data = encoder.encode(userInput);
-    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-    const hashArray = Array.from(new Uint8Array(hashBuffer));
-    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-  }
+      function b64ToBytes(b64) {
+        var bin = atob(b64);
+        var out = new Uint8Array(bin.length);
+        for (var i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
+        return out;
+      }
 
-  // Load hashed passwords from passwords.json
-  let passwordHashes = {};
-  async function loadPasswordHashes() {
-    try {
-      const response = await fetch('passwords.json');
-      if (!response.ok) throw new Error('Failed to load password hashes');
-      const data = await response.json();
-      data.entries.forEach(entry => {
-        passwordHashes[entry.page] = entry.hash;
+      function showError(text) {
+        msg.textContent = text;
+        msg.className = "msg error";
+      }
+
+      function showApp(html) {
+        gate.hidden = true;
+        app.hidden = false;
+        app.className = "";
+        app.innerHTML = html;
+      }
+
+      function showAppError(text) {
+        gate.hidden = true;
+        app.hidden = false;
+        app.className = "status error";
+        app.textContent = text;
+      }
+
+      async function loadPage(secretKey) {
+        try {
+          var enc = new TextEncoder();
+          var hashBuf = await crypto.subtle.digest("SHA-256", enc.encode(secretKey));
+          var storageHash = hexOf(hashBuf);
+
+          var resp = await fetch("./data/" + storageHash + ".json");
+          if (!resp.ok) throw new Error("notfound");
+          var payload = await resp.json();
+          if (payload.alg !== "AES-256-GCM") throw new Error("alg");
+
+          var keyBytes = pad32(enc.encode(secretKey));
+          var key = await crypto.subtle.importKey(
+            "raw", keyBytes, { name: "AES-GCM" }, false, ["decrypt"]
+          );
+
+          var iv = b64ToBytes(payload.iv);
+          var ct = b64ToBytes(payload.ct);
+          var plain = await crypto.subtle.decrypt({ name: "AES-GCM", iv: iv }, key, ct);
+          var html = new TextDecoder().decode(plain);
+          showApp(html);
+        } catch (err) {
+          showAppError("Access denied: invalid link or key.");
+        }
+      }
+
+      function tryUnlock() {
+        var key = keyInput.value;
+        if (!key) { showError("Please enter a key."); return; }
+        msg.textContent = "";
+        msg.className = "msg";
+        loadPage(key);
+      }
+
+      unlockBtn.addEventListener("click", tryUnlock);
+      keyInput.addEventListener("keydown", function (e) {
+        if (e.key === "Enter") tryUnlock();
       });
-    } catch (error) {
-      console.error('Error loading password hashes:', error);
-      passwordHashes = {};
-    }
-  }
 
-  // Verify password for a given page
-  async function verifyPassword(pageUrl, inputPassword) {
-    const storedHash = passwordHashes[pageUrl];
-    if (!storedHash) {
-      console.warn(`No password hash found for ${pageUrl}`);
-      return false;
-    }
-    const inputHash = await hashPassword(inputPassword);
-    return inputHash === storedHash;
-  }
-
-  // --- Render --------------------------------------------------------------
-  const grid = document.getElementById('grid');
-  const countEl = document.getElementById('count');
-  const filterInput = document.getElementById('filter');
-
-  function render() {
-    grid.innerHTML = '';
-    const term = filterInput.value.trim().toLowerCase();
-    let shown = 0;
-    PAGES.forEach((item, idx) => {
-      const matches = !term || item.title.toLowerCase().includes(term);
-      const card = document.createElement('div');
-      card.className = 'card' + (matches ? '' : ' hidden');
-      card.innerHTML = `
-        <div class="card-head">
-          <span class="file-index">PAGE ${String(idx + 1).padStart(2, '0')}</span>
-        </div>
-        <div class="file-name"></div>
-        <a class="download-btn" role="button">Open page</a>
-      `;
-      const link = card.querySelector('a');
-      link.href = item.page;
-      link.textContent = 'Open page';
-      card.querySelector('.file-name').textContent = item.title;
-      grid.appendChild(card);
-      if (matches) shown++;
-    });
-    countEl.textContent = `${shown} of ${PAGES.length} pages`;
-  }
-
-  filterInput.addEventListener('input', render);
-  render();
-
-  // Load password hashes on page initialization
-  loadPasswordHashes().then(() => {
-    console.log('Password hashes loaded successfully');
-  });
-
-</script>
-
+      // Direct entry: if URL already has a #SecretKey, try it.
+      var hashKey = (location.hash || "").replace(/^#/, "");
+      if (hashKey) {
+        gate.hidden = true;
+        app.hidden = false;
+        loadPage(hashKey);
+      }
+    })();
+  </script>
 </body>
 </html>
