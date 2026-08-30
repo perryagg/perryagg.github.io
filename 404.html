@@ -69,9 +69,13 @@
     var raw = location.pathname.replace(/\/+$/, "").split("/").pop() || "";
     pathEl.textContent = location.pathname;
 
+    // GitHub Pages serves this 404.html "at" the requested URL, so relative
+    // paths would resolve under /<hash>/. Use absolute paths everywhere.
+    var base = location.origin + "/";
+
     // Bail out for "/" or "index.html" — should not happen, but be safe.
     if (!raw || raw === "index.html" || raw === "404.html") {
-      window.location.replace("index.html");
+      window.location.replace(base + "index.html");
       return;
     }
 
@@ -79,13 +83,13 @@
     if (!/^[0-9a-f]{64}$/i.test(raw)) {
       titleEl.textContent = "Page not found";
       msgEl.className = "error";
-      msgEl.innerHTML = 'That path is not a recognized hash. <a href="index.html">Back to all pages</a>.';
+      msgEl.innerHTML = 'That path is not a recognized hash. <a href="' + base + 'index.html">Back to all pages</a>.';
       return;
     }
 
     var target = raw.toLowerCase();
 
-    fetch(".passwords.json")
+    fetch(base + ".passwords.json")
       .then(function (r) {
         if (!r.ok) throw new Error("HTTP " + r.status);
         return r.json();
@@ -94,18 +98,18 @@
         var entries = (data && data.entries) || [];
         for (var i = 0; i < entries.length; i++) {
           if ((entries[i].hash || "").toLowerCase() === target) {
-            window.location.replace(entries[i].page);
+            window.location.replace(base + entries[i].page);
             return;
           }
         }
         titleEl.textContent = "Hash not recognized";
         msgEl.className = "error";
-        msgEl.innerHTML = 'No page is registered for that hash. <a href="index.html">Back to all pages</a>.';
+        msgEl.innerHTML = 'No page is registered for that hash. <a href="' + base + 'index.html">Back to all pages</a>.';
       })
       .catch(function () {
         titleEl.textContent = "Lookup failed";
         msgEl.className = "error";
-        msgEl.innerHTML = 'Could not load <code>.passwords.json</code>. <a href="index.html">Back to all pages</a>.';
+        msgEl.innerHTML = 'Could not load <code>.passwords.json</code>. <a href="' + base + 'index.html">Back to all pages</a>.';
       });
   })();
 </script>
