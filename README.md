@@ -20,6 +20,25 @@ Grant access if match
 
 Plain-text passwords → hashed locally → only hashes are committed.
 
+## Direct Hash URLs
+
+Any 64-character SHA-256 hash in the URL path resolves directly to its page:
+
+```
+https://perryagg.github.io/<hash>  →  file-XX.html (password-gated)
+```
+
+This works via a `404.html` redirector that:
+
+1. Reads the last path segment from `location.pathname`.
+2. Validates it as a 64-char hex string.
+3. Looks it up (case-insensitive) in `.passwords.json` and redirects to the
+   matching `file-XX.html`.
+
+Unknown hashes show a "Hash not recognized" message with a link back to the
+index. The redirector is read-only — it does not modify the JSON or any
+`file-XX.html` page.
+
 ## Setup
 
 ### Prerequisites
@@ -31,8 +50,9 @@ Plain-text passwords → hashed locally → only hashes are committed.
 | File | Purpose | Committed? |
 |------|---------|------------|
 | `.passwords-plain.json` | Plain-text passwords (source of truth) | ❌ No (gitignored) |
-| `.passwords.json` | SHA-256 hashed passwords | ✅ Yes |
-| `file-XX.html` | Protected pages with embedded hash | ✅ Yes |
+| `.passwords.json` | SHA-256 hashed passwords (read by every page at runtime) | ✅ Yes |
+| `file-XX.html` | Protected pages — fetch their hash from `.passwords.json` | ✅ Yes |
+| `404.html` | Hash-to-page redirector (see "Direct Hash URLs" above) | ✅ Yes |
 
 ## Usage
 
@@ -49,9 +69,7 @@ Edit `.passwords-plain.json`:
 }
 ```
 
-### 2. Generate hashes and update everything
-
-Run a single command — it updates both `.passwords.json` and all HTML files:
+### 2. Generate hashes
 
 ```bash
 node scripts/hash-passwords.js
@@ -60,13 +78,16 @@ node scripts/hash-passwords.js
 Output:
 ```
 ✓ Successfully wrote hashed passwords to .passwords.json
-✓ Updated 30 HTML file(s)
 ```
 
-### 3. Commit the changes
+The script only writes `.passwords.json` — it does **not** modify any HTML file.
+Each `file-XX.html` fetches its own hash from `.passwords.json` on page load, keyed
+off `location.pathname.split('/').pop()`.
+
+### 3. Commit the change
 
 ```bash
-git add .passwords.json file-*.html
+git add .passwords.json
 git commit -m "Update password hashes"
 ```
 
@@ -75,9 +96,7 @@ git commit -m "Update password hashes"
 ## Scripts
 
 | Script | Purpose |
-|--------|---------|
-| `node scripts/hash-passwords.js` | Hash passwords and update `.passwords.json` + all HTML files |
-| `node scripts/update-html-files.js` | One-time migration: replace plain-text passwords with hashes in HTML |
+|--------|---------|Read `.passwords-plain.json`, write `.passwords.json` with SHA-256 hashds with hashes in HTML |
 | `node scripts/fix-files.js` | Fix duplicate event listener syntax errors in HTML files |
 
 ## Security
@@ -85,7 +104,7 @@ git commit -m "Update password hashes"
 - **Algorithm:** SHA-256 via Web Crypto API (`crypto.subtle.digest`)
 - **Hashes stored:** 64-character hex strings in `.passwords.json` and embedded in HTML
 - **Plain-text storage:** Only in `.passwords-plain.json` (local, gitignored)
-- **Browser-side:** Passwords are hashed in the browser before comparison — plain text never leaves the user's machine for verification
+- **Browser-side:** Passwords are hashed in the browser before comp(loaded at runtime by every page)never leaves the user's machine for verification
 
 ## Caveats
 
@@ -102,12 +121,10 @@ git commit -m "Update password hashes"
 ├── file-02.html
 ├── ...
 ├── file-30.html
-├── .passwords.json         # SHA-256 hashes (committed)
+├── .passwords.json         # SHA-256 hashes (committed, read at runtime)
 ├── .passwords-plain.json   # Plain-text passwords (gitignored)
 ├── .gitignore
 ├── README.md
 └── scripts/
-    ├── hash-passwords.js
-    ├── update-html-files.js
-    └── fix-files.js
+    └── hash-passwords.js
 ```

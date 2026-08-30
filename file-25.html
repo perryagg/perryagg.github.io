@@ -103,7 +103,7 @@
 
   <div class="reveal" id="reveal">
     <h2>Welcome to Page 25</h2>
-    <p>You have unlocked this page.</p>
+    <p>Hello.</p>
   </div>
 </main>
 <footer>
@@ -111,7 +111,7 @@
 </footer>
 <script>
   (function () {
-    var PASSWORD_HASH = "022d1e320150bd99f60b2c7f59beeb0d65da7410310ef5404614cadb5f73de52";
+    var pageKey = location.pathname.split('/').pop();
     var pw = document.getElementById("pw");
     var msg = document.getElementById("msg");
     var unlockBtn = document.getElementById("unlock-btn");
@@ -119,12 +119,40 @@
     var reveal = document.getElementById("reveal");
     var gate = document.getElementById("gate");
 
+    var cachedHash = null;
+    var hashReady = false;
+
+    function loadHash() {
+      fetch('.passwords.json')
+        .then(function (r) { return r.json(); })
+        .then(function (data) {
+          var map = {};
+          (data.entries || []).forEach(function (e) { map[e.page] = e.hash; });
+          cachedHash = map[pageKey] || null;
+          hashReady = true;
+        })
+        .catch(function () {
+          msg.textContent = "Could not load password data.";
+          msg.className = "msg error";
+        });
+    }
+
     function tryUnlock() {
+      if (!hashReady) {
+        msg.textContent = "Loading, please wait...";
+        msg.className = "msg error";
+        return;
+      }
+      if (!cachedHash) {
+        msg.textContent = "No password configured for this page.";
+        msg.className = "msg error";
+        return;
+      }
       var input = pw.value;
       crypto.subtle.digest("SHA-256", new TextEncoder().encode(input)).then(function(hashBuffer) {
         var hashArray = Array.from(new Uint8Array(hashBuffer));
         var inputHash = hashArray.map(function(b) { return b.toString(16).padStart(2, "0"); }).join("");
-        if (inputHash === PASSWORD_HASH) {
+        if (inputHash === cachedHash) {
           msg.textContent = "";
           msg.className = "msg";
           gate.style.display = "none";
@@ -137,6 +165,7 @@
       });
     }
 
+    loadHash();
     unlockBtn.addEventListener("click", tryUnlock);
     backBtn.addEventListener("click", function () { window.location.href = "index.html"; });
     pw.addEventListener("keydown", function (e) {

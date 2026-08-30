@@ -164,7 +164,7 @@
 
 <header>
   <h1>Protected Pages</h1>
-  <p>30 pages, each gated by its own password</p>
+  <p>30 pages, each gated by its own password &middot; or open via a direct hash URL</p>
 </header>
 
 <div class="security-notice">
@@ -220,6 +220,8 @@
   ];
 
   // --- Password hashing utilities -----------------------------------------
+  // Note: Each file-XX.html derives its own key via location.pathname.split('/').pop()
+  // and fetches its hash from .passwords.json on page load.
   // Hash a password using SHA-256 via Web Crypto API
   async function hashPassword(userInput) {
     const encoder = new TextEncoder();
