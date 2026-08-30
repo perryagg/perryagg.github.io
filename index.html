@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Protected Downloads</title>
+<style>
+  :root {
+    --bg: #0f172a;
+    --panel: #1e293b;
+    --panel-2: #273449;
+    --text: #e2e8f0;
+    --muted: #94a3b8;
+    --accent: #38bdf8;
+    --accent-hover: #0ea5e9;
+    --danger: #f87171;
+    --success: #4ade80;
+    --border: #334155;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    line-height: 1.5;
+    min-height: 100vh;
+  }
+
+  header {
+    padding: 48px 24px 24px;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+  }
+
+  header h1 {
+    margin: 0 0 8px;
+    font-size: 2rem;
+    letter-spacing: -0.02em;
+  }
+
+  header p {
+    margin: 0;
+    color: var(--muted);
+  }
+
+  .security-notice {
+    max-width: 760px;
+    margin: 24px auto;
+    padding: 14px 18px;
+    background: rgba(248, 113, 113, 0.08);
+    border: 1px solid rgba(248, 113, 113, 0.35);
+    border-radius: 10px;
+    color: #fecaca;
+    font-size: 0.92rem;
+  }
+
+  .security-notice strong { color: var(--danger); }
+
+  main {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 32px 24px 64px;
+  }
+
+  .toolbar {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 18px;
+    align-items: center;
+  }
+
+  .toolbar input[type="search"] {
+    flex: 1 1 220px;
+    background: var(--panel);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 0.95rem;
+  }
+
+  .toolbar input[type="search"]:focus {
+    outline: none;
+    border-color: var(--accent);
+  }
+
+  .count-pill {
+    background: var(--panel-2);
+    color: var(--muted);
+    border-radius: 999px;
+    padding: 6px 12px;
+    font-size: 0.85rem;
+  }
+
+  .download-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 14px;
+  }
+
+  .card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    transition: border-color 0.15s, transform 0.15s;
+  }
+
+  .card:hover { border-color: var(--accent); transform: translateY(-1px); }
+  .card.hidden { display: none; }
+
+  .card-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 8px;
+  }
+
+  .file-index {
+    color: var(--muted);
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+  }
+
+  .file-name {
+    font-size: 0.95rem;
+    word-break: break-all;
+    color: var(--text);
+  }
+
+  button.download-btn {
+    background: var(--accent);
+    color: #0b1220;
+    border: none;
+    border-radius: 8px;
+    padding: 9px 14px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 0.92rem;
+    transition: background 0.15s;
+  }
+
+  button.download-btn:hover { background: var(--accent-hover); }
+  button.download-btn:active { transform: translateY(1px); }
+
+  /* Modal */
+  .modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(2, 6, 23, 0.7);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    z-index: 100;
+  }
+
+  .modal-backdrop.open { display: flex; }
+
+  .modal {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 24px;
+    width: 100%;
+    max-width: 420px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  }
+
+  .modal h2 {
+    margin: 0 0 4px;
+    font-size: 1.15rem;
+  }
+
+  .modal .modal-subtitle {
+    color: var(--muted);
+    font-size: 0.88rem;
+    margin-bottom: 18px;
+    word-break: break-all;
+  }
+
+  .modal label {
+    display: block;
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+
+  .modal input[type="password"] {
+    width: 100%;
+    background: var(--bg);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: 1rem;
+  }
+
+  .modal input[type="password"]:focus {
+    outline: none;
+    border-color: var(--accent);
+  }
+
+  .modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: 18px;
+  }
+
+  .btn-secondary {
+    background: transparent;
+    color: var(--muted);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 9px 14px;
+    cursor: pointer;
+    font-size: 0.92rem;
+  }
+
+  .btn-secondary:hover { color: var(--text); border-color: var(--text); }
+
+  .error {
+    color: var(--danger);
+    font-size: 0.88rem;
+    margin-top: 10px;
+    min-height: 1.2em;
+  }
+
+  .success {
+    color: var(--success);
+    font-size: 0.88rem;
+    margin-top: 10px;
+    min-height: 1.2em;
+  }
+
+  footer {
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.85rem;
+    padding: 24px 16px 40px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Protected Downloads</h1>
+  <p>30 files, each gated by its own password</p>
+</header>
+
+<div class="security-notice">
+  <strong>Security note:</strong> This is a static site. The file paths and passwords are visible in the page source. This scheme is suitable for low-sensitivity distribution (e.g. sharing with a small known group). For stronger protection, encrypt each file with its password (e.g. 7-Zip AES) and share the archive instead.
+</div>
+
+<main>
+  <div class="toolbar">
+    <input type="search" id="filter" placeholder="Filter files…" aria-label="Filter files" />
+    <span class="count-pill" id="count">30 files</span>
+  </div>
+  <div class="download-grid" id="grid"></div>
+</main>
+
+<div class="modal-backdrop" id="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+  <div class="modal">
+    <h2 id="modal-title">Enter password</h2>
+    <div class="modal-subtitle" id="modal-subtitle"></div>
+    <label for="pw">Password</label>
+    <input type="password" id="pw" autocomplete="off" />
+    <div class="error" id="msg"></div>
+    <div class="modal-actions">
+      <button class="btn-secondary" id="cancel-btn">Cancel</button>
+      <button class="download-btn" id="submit-btn">Download</button>
+    </div>
+  </div>
+</div>
+
+<footer>
+  Drop your files into <code>files/</code> using the names listed below to make the links live.
+</footer>
+
+<script>
+  // --- Configuration -------------------------------------------------------
+  // Each entry: { file: 'relative path', name: 'display name', password: '...' }
+  // Replace the file paths with your own files in a /files/ folder.
+  const DOWNLOADS = [
+    { file: 'files/file-01.pdf',  name: 'file-01.pdf',  password: 'alpha-4827-quasar'   },
+    { file: 'files/file-02.pdf',  name: 'file-02.pdf',  password: 'bravo-9153-tundra'   },
+    { file: 'files/file-03.pdf',  name: 'file-03.pdf',  password: 'cipher-2604-ember'   },
+    { file: 'files/file-04.pdf',  name: 'file-04.pdf',  password: 'delta-7381-river'    },
+    { file: 'files/file-05.pdf',  name: 'file-05.pdf',  password: 'echo-5096-canyon'    },
+    { file: 'files/file-06.pdf',  name: 'file-06.pdf',  password: 'falcon-1247-meadow'  },
+    { file: 'files/file-07.pdf',  name: 'file-07.pdf',  password: 'golf-8653-storm'     },
+    { file: 'files/file-08.pdf',  name: 'file-08.pdf',  password: 'harbor-3419-arctic'  },
+    { file: 'files/file-09.pdf',  name: 'file-09.pdf',  password: 'iris-6028-sunset'    },
+    { file: 'files/file-10.pdf',  name: 'file-10.pdf',  password: 'jaguar-1594-forest'  },
+    { file: 'files/file-11.pdf',  name: 'file-11.pdf',  password: 'kilo-4872-velvet'    },
+    { file: 'files/file-12.pdf',  name: 'file-12.pdf',  password: 'lima-7305-harbor'    },
+    { file: 'files/file-13.pdf',  name: 'file-13.pdf',  password: 'meteor-2168-cobalt'  },
+    { file: 'files/file-14.pdf',  name: 'file-14.pdf',  password: 'nova-8941-flame'     },
+    { file: 'files/file-15.pdf',  name: 'file-15.pdf',  password: 'oscar-3726-winter'   },
+    { file: 'files/file-16.pdf',  name: 'file-16.pdf',  password: 'panther-6519-summit' },
+    { file: 'files/file-17.pdf',  name: 'file-17.pdf',  password: 'quartz-9284-breeze'  },
+    { file: 'files/file-18.pdf',  name: 'file-18.pdf',  password: 'raven-2837-crystal'  },
+    { file: 'files/file-19.pdf',  name: 'file-19.pdf',  password: 'summit-5461-garden'  },
+    { file: 'files/file-20.pdf',  name: 'file-20.pdf',  password: 'tundra-7092-cosmic'  },
+    { file: 'files/file-21.pdf',  name: 'file-21.pdf',  password: 'ultra-1358-walnut'   },
+    { file: 'files/file-22.pdf',  name: 'file-22.pdf',  password: 'vortex-4823-amber'   },
+    { file: 'files/file-23.pdf',  name: 'file-23.pdf',  password: 'willow-8671-crimson' },
+    { file: 'files/file-24.pdf',  name: 'file-24.pdf',  password: 'xenon-2946-sapphire' },
+    { file: 'files/file-25.pdf',  name: 'file-25.pdf',  password: 'yonder-6517-cedar'   },
+    { file: 'files/file-26.pdf',  name: 'file-26.pdf',  password: 'zenith-9285-magnolia'},
+    { file: 'files/file-27.pdf',  name: 'file-27.pdf',  password: 'apex-3694-thunder'   },
+    { file: 'files/file-28.pdf',  name: 'file-28.pdf',  password: 'bramble-7528-harvest'},
+    { file: 'files/file-29.pdf',  name: 'file-29.pdf',  password: 'cobalt-1846-starlight'},
+    { file: 'files/file-30.pdf',  name: 'file-30.pdf',  password: 'drift-9073-cascade'  },
+  ];
+
+  // --- Render --------------------------------------------------------------
+  const grid = document.getElementById('grid');
+  const countEl = document.getElementById('count');
+  const filterInput = document.getElementById('filter');
+
+  function render() {
+    grid.innerHTML = '';
+    const term = filterInput.value.trim().toLowerCase();
+    let shown = 0;
+    DOWNLOADS.forEach((item, idx) => {
+      const matches = !term || item.name.toLowerCase().includes(term);
+      const card = document.createElement('div');
+      card.className = 'card' + (matches ? '' : ' hidden');
+      card.innerHTML = `
+        <div class="card-head">
+          <span class="file-index">FILE ${String(idx + 1).padStart(2, '0')}</span>
+        </div>
+        <div class="file-name"></div>
+        <button class="download-btn" type="button">Download</button>
+      `;
+      card.querySelector('.file-name').textContent = item.name;
+      card.querySelector('button').addEventListener('click', () => openModal(idx));
+      grid.appendChild(card);
+      if (matches) shown++;
+    });
+    countEl.textContent = `${shown} of ${DOWNLOADS.length} files`;
+  }
+
+  filterInput.addEventListener('input', render);
+  render();
+
+  // --- Modal & password check ----------------------------------------------
+  const modal = document.getElementById('modal');
+  const subtitle = document.getElementById('modal-subtitle');
+  const pwInput = document.getElementById('pw');
+  const msg = document.getElementById('msg');
+  const submitBtn = document.getElementById('submit-btn');
+  const cancelBtn = document.getElementById('cancel-btn');
+  let activeIdx = -1;
+
+  function openModal(idx) {
+    activeIdx = idx;
+    const item = DOWNLOADS[idx];
+    subtitle.textContent = item.name;
+    pwInput.value = '';
+    msg.textContent = '';
+    msg.className = 'error';
+    modal.classList.add('open');
+    setTimeout(() => pwInput.focus(), 30);
+  }
+
+  function closeModal() {
+    modal.classList.remove('open');
+    activeIdx = -1;
+  }
+
+  function tryDownload() {
+    const item = DOWNLOADS[activeIdx];
+    if (!item) return;
+    if (pwInput.value === item.password) {
+      msg.textContent = 'Password accepted.';
+      msg.className = 'success';
+      // Trigger the actual download
+      const a = document.createElement('a');
+      a.href = item.file;
+      a.download = '';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(closeModal, 400);
+    } else {
+      msg.textContent = 'Incorrect password. Please try again.';
+      msg.className = 'error';
+      pwInput.select();
+    }
+  }
+
+  submitBtn.addEventListener('click', tryDownload);
+  cancelBtn.addEventListener('click', closeModal);
+  modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+  pwInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') tryDownload();
+    if (e.key === 'Escape') closeModal();
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && modal.classList.contains('open')) closeModal();
+  });
+</script>
+
+</body>
+</html>
