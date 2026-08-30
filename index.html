@@ -135,10 +135,19 @@
           var hashBuf = await crypto.subtle.digest("SHA-256", enc.encode(secretKey));
           var storageHash = hexOf(hashBuf);
 
-          var resp = await fetch("./data/" + storageHash + ".json");
-          if (!resp.ok) throw new Error("notfound");
-          var payload = await resp.json();
-          if (payload.alg !== "AES-256-GCM") throw new Error("alg");
+          // Absolute URL: works regardless of how the SPA was reached (#hash, /, /index.html, subpath).
+          var base = location.origin + location.pathname.replace(/[^/]*$/, "");
+          var url = base + "data/" + storageHash + ".json";
+          console.log("[Exclusive] fetching", url);
+
+          var resp = await fetch(url, { cache: "no-store" });
+          if (!resp.ok) throw new Error("HTTP " + resp.status + " fetching " + url);
+          // GitHub Pages sometimes serves .json as text/plain — parse text manually.
+          var text = await resp.text();
+          var payload;
+          try { payload = JSON.parse(text); }
+          catch (pe) { throw new Error("payload parse failed: " + pe.message); }
+          if (payload.alg !== "AES-256-GCM") throw new Error("unknown alg: " + payload.alg);
 
           var keyBytes = pad32(enc.encode(secretKey));
           var key = await crypto.subtle.importKey(
@@ -147,11 +156,17 @@
 
           var iv = b64ToBytes(payload.iv);
           var ct = b64ToBytes(payload.ct);
-          var plain = await crypto.subtle.decrypt({ name: "AES-GCM", iv: iv }, key, ct);
+          var plain;
+          try {
+            plain = await crypto.subtle.decrypt({ name: "AES-GCM", iv: iv }, key, ct);
+          } catch (de) {
+            throw new Error("decrypt failed: " + (de.name || de.message));
+          }
           var html = new TextDecoder().decode(plain);
           showApp(html);
         } catch (err) {
-          showAppError("Access denied: invalid link or key.");
+          console.error("[Exclusive] loadPage error:", err);
+          showAppError("Access denied: " + (err && err.message ? err.message : String(err)));
         }
       }
 
