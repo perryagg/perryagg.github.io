@@ -273,6 +273,14 @@
     opacity: 0.3;
     cursor: not-allowed;
   }
+  .symbol-card[draggable="true"] { cursor: grab; }
+  .symbol-card[draggable="true"]:active { cursor: grabbing; }
+  .symbol-card.dragging { opacity: 0.4; }
+  .word-slot.drag-over {
+    background: rgba(88, 166, 255, 0.3);
+    border-color: var(--accent-2);
+    transform: scale(1.05);
+  }
   .symbol-card.slot {
     border-style: dashed;
     background: rgba(88, 166, 255, 0.05);
@@ -728,58 +736,85 @@ const stage1 = {
 
 /* ============================================================
    STAGE 2: The Locked Door
-   Find the 3-digit code from clues embedded in the room.
+   Three sub-puzzles must each be solved to extract a digit.
    ============================================================ */
 const stage2 = {
   title: 'Stage 2 — The Locked Door',
-  flavor: 'A heavy iron door blocks your path. Three rotating dials need a 3-digit combination.',
+  flavor: 'A heavy iron door blocks your path. Solve three puzzles in the antechamber to learn the 3-digit combination.',
   hintsRemaining: 3,
   hints: [
-    'The painting, the book, and the inscription all describe the same number.',
-    'The painting shows 7 figures. The book has 7 chapters listed. The inscription mentions the 7th letter.',
-    'The first digit comes from the count of figures; the middle digit is from the chapter count; the last is from "G".',
+    'Puzzle 1: count the figures. Puzzle 2: read the chapter number. Puzzle 3: the position of the letter in the alphabet.',
+    'Puzzle 1 → 7, Puzzle 2 → 7, Puzzle 3 → 7. The answer is 7-7-7.',
+    'Each artifact hides a small puzzle. Solve each one to learn one digit.',
   ],
   found: { first: null, second: null, third: null },
 
   render(container) {
     container.innerHTML = `
-      <p>Around the door you notice three artifacts, each giving a digit:</p>
-      <div class="grid" style="grid-template-columns: repeat(3, 1fr); gap: 14px;">
+      <p>Three pedestals stand before the door. Each holds a small puzzle. Solve each to learn one digit of the combination.</p>
+
+      <div class="grid" style="grid-template-columns: 1fr; gap: 14px;">
         <div class="panel" style="margin: 0;">
-          <strong>🖼️ A Painting</strong>
-          <p style="font-size: 13px; color: var(--muted); margin: 8px 0;">
-            "Seven wanderers beneath a crescent moon, each carrying a single star."
+          <strong>🖼️ Pedestal 1 — The Painting</strong>
+          <p style="font-size: 14px; color: var(--muted); margin: 8px 0;">
+            A painting shows wanderers beneath a crescent moon, each carrying a single star. The title reads:<br>
+            <em>"The Pilgrims of the Silver Path"</em>
           </p>
-          <div style="font-size: 28px; text-align: center;">🌙 ⭐⭐⭐⭐⭐⭐⭐</div>
-          <button class="secondary" style="margin-top: 10px; width: 100%;"
-            onclick="stage2.submitDigit('first')">Use this digit</button>
+          <p><strong>Puzzle:</strong> The painting depicts a number equal to the number of letters in "ANCIENT". How many stars are shown?</p>
+          <div class="input-row">
+            <input type="text" id="p1" placeholder="Enter the digit" autocomplete="off" maxlength="1" />
+            <button onclick="stage2.checkPuzzle(1)">Submit</button>
+          </div>
+          <div class="feedback" id="p1fb"></div>
         </div>
+
         <div class="panel" style="margin: 0;">
-          <strong>📖 An Open Book</strong>
-          <p style="font-size: 13px; color: var(--muted); margin: 8px 0;">
-            Chapters listed: I, II, III, IV, V, VI, <strong>VII</strong>, VIII...
+          <strong>📖 Pedestal 2 — The Open Book</strong>
+          <p style="font-size: 14px; color: var(--muted); margin: 8px 0;">
+            A book lies open to a table of contents:
           </p>
           <div class="code-block-display" style="margin: 0;">
-Chapter VII: The Lock
-"The final digit lies in the seventh seal."
+I.   The Sunken Door
+II.  The Hall of Mirrors
+III. The Riddle of Stone
+IV.  The Whispering Wind
+V.   The Bridge of Time
+VI.  The Silver Key
+VII. <strong>THE FINAL SEAL</strong>
           </div>
-          <button class="secondary" style="margin-top: 10px; width: 100%;"
-            onclick="stage2.submitDigit('second')">Use this digit</button>
+          <p><strong>Puzzle:</strong> One chapter's title is bolded as a warning. Read that chapter's Roman numeral as a single digit.</p>
+          <div class="input-row">
+            <input type="text" id="p2" placeholder="Enter the digit" autocomplete="off" maxlength="1" />
+            <button onclick="stage2.checkPuzzle(2)">Submit</button>
+          </div>
+          <div class="feedback" id="p2fb"></div>
         </div>
+
         <div class="panel" style="margin: 0;">
-          <strong>🪨 Stone Inscription</strong>
-          <p style="font-size: 13px; color: var(--muted); margin: 8px 0;">
-            "The third digit is the position of <strong>G</strong> in our alphabet."
+          <strong>🪨 Pedestal 3 — The Stone Inscription</strong>
+          <p style="font-size: 14px; color: var(--muted); margin: 8px 0;">
+            A circle is carved into the stone, divided like a clock but with letters at each position:
           </p>
-          <div style="font-size: 18px; text-align: center; letter-spacing: 8px; font-family: monospace;">
-            A B C D E F G H I
+          <div class="code-block-display" style="margin: 0;">
+        12 (A)
+    11          1 (B)
+  10 (C)        2 (D)
+    9           3 (E)
+        6 (F)
+    7           5 (G)
+  8            4 (H)
           </div>
-          <button class="secondary" style="margin-top: 10px; width: 100%;"
-            onclick="stage2.submitDigit('third')">Use this digit</button>
+          <p><strong>Puzzle:</strong> A golden pointer rests on the letter that sits where the number 7 would be on a clock. What position (1–12) is that?</p>
+          <div class="input-row">
+            <input type="text" id="p3" placeholder="Enter the digit" autocomplete="off" maxlength="2" />
+            <button onclick="stage2.checkPuzzle(3)">Submit</button>
+          </div>
+          <div class="feedback" id="p3fb"></div>
         </div>
       </div>
 
-      <div id="digitSlots" style="display: flex; gap: 14px; margin: 16px 0; justify-content: center;">
+      <div id="digitSlots" style="display: flex; gap: 14px; margin: 20px 0 6px; justify-content: center; align-items: center;">
+        <span style="color: var(--muted); font-size: 14px;">Combination:</span>
         <div class="word-slot" id="slot1" style="width: 60px; height: 70px; font-size: 32px;">?</div>
         <div class="word-slot" id="slot2" style="width: 60px; height: 70px; font-size: 32px;">?</div>
         <div class="word-slot" id="slot3" style="width: 60px; height: 70px; font-size: 32px;">?</div>
@@ -787,32 +822,43 @@ Chapter VII: The Lock
 
       <div class="hint-area" id="hint2" style="display:none"></div>
       <div class="toolbar" style="justify-content: center;">
-        <button onclick="stage2.tryOpen()">Try Combination</button>
-        <button class="secondary" onclick="stage2.reset()">Reset</button>
+        <button onclick="stage2.tryOpen()">Open the Door</button>
         <button class="secondary" onclick="stage2.showHint()">Hint (${this.hintsRemaining})</button>
       </div>
       <div class="feedback" id="lockFeedback"></div>
     `;
-  },
 
-  submitDigit(position) {
-    const digits = { first: 7, second: 7, third: 7 };
-    this.found[position] = digits[position];
-    const slotMap = { first: 'slot1', second: 'slot2', third: 'slot3' };
-    document.getElementById(slotMap[position]).textContent = digits[position];
-    document.getElementById(slotMap[position]).classList.add('filled');
-    const fb = document.getElementById('lockFeedback');
-    fb.className = 'feedback show info';
-    fb.innerHTML = `Digit ${position} noted: ${digits[position]}`;
-  },
-
-  reset() {
-    this.found = { first: null, second: null, third: null };
-    ['slot1', 'slot2', 'slot3'].forEach(id => {
-      document.getElementById(id).textContent = '?';
-      document.getElementById(id).classList.remove('filled');
+    ['p1','p2','p3'].forEach((id, i) => {
+      const el = document.getElementById(id);
+      el.addEventListener('keydown', e => {
+        if (e.key === 'Enter') stage2.checkPuzzle(i + 1);
+      });
     });
-    document.getElementById('lockFeedback').className = 'feedback';
+  },
+
+  checkPuzzle(n) {
+    const input = document.getElementById(`p${n}`);
+    const fb = document.getElementById(`p${n}fb`);
+    const val = input.value.trim();
+    if (val === '7') {
+      fb.className = 'feedback show good';
+      fb.innerHTML = `✓ Correct! The first/second/third digit is <strong>7</strong>.`;
+      input.disabled = true;
+      input.style.opacity = '0.5';
+      const slotMap = { 1: 'slot1', 2: 'slot2', 3: 'slot3' };
+      const slot = document.getElementById(slotMap[n]);
+      slot.textContent = '7';
+      slot.classList.add('filled');
+      const keyMap = { 1: 'first', 2: 'second', 3: 'third' };
+      this.found[keyMap[n]] = 7;
+    } else if (val === '') {
+      fb.className = 'feedback show info';
+      fb.innerHTML = 'Enter a single digit.';
+    } else {
+      fb.className = 'feedback show bad';
+      fb.innerHTML = `✗ "${val}" is not correct. Re-read the puzzle.`;
+      input.select();
+    }
   },
 
   showHint() {
@@ -829,12 +875,12 @@ Chapter VII: The Lock
     const fb = document.getElementById('lockFeedback');
     if (this.found.first === null || this.found.second === null || this.found.third === null) {
       fb.className = 'feedback show bad';
-      fb.innerHTML = '✗ You must consult all three artifacts first.';
+      fb.innerHTML = '✗ You must solve all three puzzles first.';
       return;
     }
     fb.className = 'feedback show good';
     fb.innerHTML = '✓ <strong>CLICK.</strong> The door groans open.';
-    game.addSecret('<strong>Stage 2 cleared:</strong> Combination 7-7-7 — the wanderers, the chapter, the letter.');
+    game.addSecret('<strong>Stage 2 cleared:</strong> Solved the three pedestal puzzles — combination 7-7-7.');
     game.advance();
   }
 };
@@ -861,11 +907,10 @@ const stage3 = {
   symbolOrder: ['✸', '☾', '✶', '☀', '✷', '✦'],
 
   render(container) {
-    this.assignments = {};
-    this.usedSymbols = new Set();
-    this.currentSlot = 0;
+    this.assignments = {}; // idx -> symbol
+    this.usedSymbols = new Set(); // symbols currently placed
+    this.dragSource = null; // {type: 'palette'|'slot', sym, fromIdx?}
 
-    const cipher = this.cipher;
     const order = this.symbolOrder;
     const word = 'CIPHER';
 
@@ -879,22 +924,26 @@ const stage3 = {
 • Two letters repeat; the third letter is the 8th letter of the alphabet.
       </div>
 
-      <p><strong>Cipher Key (drag a symbol onto each slot):</strong></p>
+      <p><strong>Cipher Key (drag a symbol onto a slot):</strong></p>
       <div class="symbol-row" id="symbolPalette">
         ${order.map(sym => `
-          <div class="symbol-card" data-symbol="${sym}" onclick="stage3.useSymbol('${sym}')">
+          <div class="symbol-card" data-symbol="${sym}" draggable="true" id="palette_${sym}">
             ${sym}
           </div>
         `).join('')}
       </div>
 
-      <p><strong>Decode the word:</strong></p>
+      <p><strong>Decode the word (drop symbols here):</strong></p>
       <div class="word-display" id="wordDisplay">
         ${word.split('').map((ch, i) => `
-          <div class="word-slot slot" data-idx="${i}" onclick="stage3.removeSlot(${i})"
-            id="slot_${i}">${i === 0 ? 'C' : ''}</div>
+          <div class="word-slot slot" data-idx="${i}" id="slot_${i}"
+            ${i === 0 ? 'style="cursor:default;"' : ''}>
+            ${i === 0 ? 'C' : ''}
+          </div>
         `).join('')}
       </div>
+
+      <p style="font-size: 12px; color: var(--muted);">Tip: click a filled slot to return its symbol to the palette.</p>
 
       <div class="hint-area" id="hint3" style="display:none"></div>
       <div class="toolbar" style="justify-content: center;">
@@ -904,38 +953,150 @@ const stage3 = {
       </div>
       <div class="feedback" id="cipherFeedback"></div>
     `;
+
+    this.attachDragHandlers();
   },
 
-  useSymbol(sym) {
-    if (this.usedSymbols.has(sym)) return;
-    const target = this.currentSlot < 6 ? this.currentSlot : 1;
-    // Skip slot 0 (already C)
-    let slot = this.currentSlot;
-    if (slot === 0) slot = 1;
-    if (slot > 5) return;
-    this.assignments[slot] = sym;
-    document.getElementById(`slot_${slot}`).textContent = sym;
-    document.getElementById(`slot_${slot}`).classList.add('filled');
-    this.usedSymbols.add(sym);
-    document.querySelector(`[data-symbol="${sym}"]`).classList.add('used');
-    this.currentSlot++;
+  attachDragHandlers() {
+    const self = this;
+
+    // Palette symbols
+    document.querySelectorAll('#symbolPalette .symbol-card').forEach(card => {
+      card.addEventListener('dragstart', e => {
+        const sym = card.dataset.symbol;
+        if (self.usedSymbols.has(sym)) {
+          e.preventDefault();
+          return;
+        }
+        self.dragSource = { type: 'palette', sym };
+        card.classList.add('dragging');
+        e.dataTransfer.setData('text/plain', sym);
+        e.dataTransfer.effectAllowed = 'copy';
+      });
+      card.addEventListener('dragend', () => {
+        card.classList.remove('dragging');
+        self.dragSource = null;
+      });
+    });
+
+    // Slots
+    document.querySelectorAll('.word-slot').forEach(slot => {
+      const idx = parseInt(slot.dataset.idx);
+
+      // Click filled slot to return symbol to palette
+      slot.addEventListener('click', e => {
+        if (idx === 0) return;
+        if (self.assignments[idx]) {
+          self.returnSymbol(idx);
+        }
+      });
+
+      // Make filled slots draggable so symbols can be moved between slots
+      slot.addEventListener('dragstart', e => {
+        if (idx === 0) return;
+        if (!self.assignments[idx]) {
+          e.preventDefault();
+          return;
+        }
+        const sym = self.assignments[idx];
+        self.dragSource = { type: 'slot', sym, fromIdx: idx };
+        slot.classList.add('dragging');
+        e.dataTransfer.setData('text/plain', sym);
+        e.dataTransfer.effectAllowed = 'move';
+      });
+      slot.addEventListener('dragend', () => {
+        slot.classList.remove('dragging');
+        self.dragSource = null;
+      });
+
+      // Allow drop
+      slot.addEventListener('dragover', e => {
+        if (idx === 0) return; // First slot locked
+        e.preventDefault();
+        e.dataTransfer.dropEffect = self.dragSource && self.dragSource.type === 'slot' ? 'move' : 'copy';
+        slot.classList.add('drag-over');
+      });
+      slot.addEventListener('dragleave', () => {
+        slot.classList.remove('drag-over');
+      });
+      slot.addEventListener('drop', e => {
+        e.preventDefault();
+        slot.classList.remove('drag-over');
+        if (idx === 0) return;
+        if (!self.dragSource) return;
+
+        const incomingSym = self.dragSource.sym;
+        const existingSym = self.assignments[idx];
+
+        if (self.dragSource.type === 'slot') {
+          // Move: source slot -> target slot (swap if target has a symbol)
+          const fromIdx = self.dragSource.fromIdx;
+          if (fromIdx === idx) return;
+          if (existingSym) {
+            // Swap
+            self.assignments[idx] = incomingSym;
+            self.assignments[fromIdx] = existingSym;
+            self.refreshSlot(idx);
+            self.refreshSlot(fromIdx);
+          } else {
+            self.assignments[idx] = incomingSym;
+            delete self.assignments[fromIdx];
+            self.refreshSlot(idx);
+            self.refreshSlot(fromIdx);
+          }
+        } else {
+          // From palette: replace if slot already filled (returns old symbol)
+          if (existingSym) {
+            self.usedSymbols.delete(existingSym);
+            self.markPaletteSymbol(existingSym, false);
+          }
+          self.assignments[idx] = incomingSym;
+          self.usedSymbols.add(incomingSym);
+          self.markPaletteSymbol(incomingSym, true);
+          self.refreshSlot(idx);
+        }
+      });
+    });
   },
 
-  removeSlot(idx) {
-    if (idx === 0) return; // First slot locked to C
+  refreshSlot(idx) {
+    const slot = document.getElementById(`slot_${idx}`);
+    const sym = this.assignments[idx];
+    slot.textContent = sym || (idx === 0 ? 'C' : '');
+    if (sym) slot.classList.add('filled');
+    else slot.classList.remove('filled');
+  },
+
+  markPaletteSymbol(sym, used) {
+    const card = document.getElementById(`palette_${sym}`);
+    if (!card) return;
+    if (used) {
+      card.classList.add('used');
+      card.setAttribute('draggable', 'false');
+    } else {
+      card.classList.remove('used');
+      card.setAttribute('draggable', 'true');
+    }
+  },
+
+  returnSymbol(idx) {
     const sym = this.assignments[idx];
     if (!sym) return;
     delete this.assignments[idx];
-    document.getElementById(`slot_${idx}`).textContent = '';
-    document.getElementById(`slot_${idx}`).classList.remove('filled');
     this.usedSymbols.delete(sym);
-    document.querySelector(`[data-symbol="${sym}"]`).classList.remove('used');
-    if (this.currentSlot > idx) this.currentSlot = idx;
+    this.markPaletteSymbol(sym, false);
+    this.refreshSlot(idx);
   },
 
   clearSlots() {
-    for (let i = 1; i <= 5; i++) this.removeSlot(i);
-    this.currentSlot = 1;
+    for (let i = 1; i <= 5; i++) {
+      if (this.assignments[i]) {
+        this.markPaletteSymbol(this.assignments[i], false);
+        delete this.assignments[i];
+      }
+    }
+    this.usedSymbols.clear();
+    for (let i = 1; i <= 5; i++) this.refreshSlot(i);
   },
 
   showHint() {
