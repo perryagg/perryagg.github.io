@@ -1,196 +1,1272 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="robots" content="noindex, nofollow">
-  <title>Exclusive Access</title>
-  <style>
-    :root {
-      --bg: #0f172a;
-      --panel: #1e293b;
-      --panel-2: #273449;
-      --text: #e2e8f0;
-      --muted: #94a3b8;
-      --accent: #38bdf8;
-      --accent-hover: #0ea5e9;
-      --danger: #f87171;
-      --border: #334155;
-    }
-    * { box-sizing: border-box; }
-    html, body {
-      margin: 0; padding: 0;
-      background: var(--bg); color: var(--text);
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      line-height: 1.5; min-height: 100vh;
-    }
-    main {
-      max-width: 520px; margin: 0 auto; padding: 64px 24px;
-    }
-    h1 { margin: 0 0 8px; font-size: 1.6rem; }
-    p.lead { margin: 0 0 24px; color: var(--muted); }
-    .panel {
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 24px;
-    }
-    label { display: block; font-size: 0.85rem; color: var(--muted); margin-bottom: 6px; }
-    input[type="password"], input[type="text"] {
-      width: 100%;
-      background: var(--bg); color: var(--text);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 10px 12px;
-      font-size: 1rem;
-    }
-    input:focus { outline: none; border-color: var(--accent); }
-    .actions { display: flex; gap: 8px; margin-top: 18px; }
-    button {
-      background: var(--accent); color: #0b1220;
-      border: none; border-radius: 8px;
-      padding: 10px 16px; font-weight: 600;
-      cursor: pointer; font-size: 0.95rem;
-    }
-    button:hover { background: var(--accent-hover); }
-    .msg { font-size: 0.88rem; margin-top: 12px; min-height: 1.2em; }
-    .msg.error { color: var(--danger); }
-    .status {
-      color: var(--muted); font-size: 0.9rem;
-      text-align: center; padding: 32px 0;
-    }
-    .status.error { color: var(--danger); }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>The Cartographer's Vault — A Puzzle Game</title>
+<style>
+  :root {
+    --bg: #0d1117;
+    --panel: #161b22;
+    --panel-2: #1c2330;
+    --border: #2a3340;
+    --text: #e6edf3;
+    --muted: #8b949e;
+    --accent: #58a6ff;
+    --accent-2: #d2a8ff;
+    --good: #3fb950;
+    --warn: #f0883e;
+    --bad: #f85149;
+    --gold: #e3b341;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: radial-gradient(ellipse at top, #1a2230 0%, var(--bg) 60%);
+    color: var(--text);
+    font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+    min-height: 100vh;
+  }
+
+  .app {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 24px;
+  }
+
+  header {
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 16px;
+    margin-bottom: 24px;
+  }
+
+  h1 {
+    margin: 0;
+    font-size: 28px;
+    letter-spacing: 0.5px;
+    background: linear-gradient(90deg, var(--accent), var(--accent-2));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .subtitle {
+    color: var(--muted);
+    font-size: 14px;
+    margin-top: 6px;
+  }
+
+  .hud {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  .stat {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 14px;
+  }
+
+  .stat .label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--muted);
+  }
+
+  .stat .value {
+    font-size: 20px;
+    font-weight: 600;
+    margin-top: 4px;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .stage-title {
+    font-size: 18px;
+    margin: 0 0 8px 0;
+    color: var(--accent);
+  }
+
+  .stage-flavor {
+    color: var(--muted);
+    margin: 0 0 16px 0;
+    font-style: italic;
+    line-height: 1.5;
+  }
+
+  .panel {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 16px;
+  }
+
+  .input-row {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  input[type="text"] {
+    background: var(--panel-2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 10px 14px;
+    border-radius: 6px;
+    font-size: 15px;
+    font-family: inherit;
+    flex: 1;
+    min-width: 200px;
+    outline: none;
+  }
+
+  input[type="text"]:focus {
+    border-color: var(--accent);
+  }
+
+  button {
+    background: var(--accent);
+    color: #0d1117;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 14px;
+    font-family: inherit;
+    transition: filter 0.15s;
+  }
+
+  button:hover { filter: brightness(1.1); }
+  button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  button.secondary {
+    background: var(--panel-2);
+    color: var(--text);
+    border: 1px solid var(--border);
+  }
+
+  .feedback {
+    margin-top: 12px;
+    padding: 10px 14px;
+    border-radius: 6px;
+    font-size: 14px;
+    display: none;
+  }
+  .feedback.show { display: block; }
+  .feedback.good { background: rgba(63, 185, 80, 0.15); border: 1px solid var(--good); color: #7ee787; }
+  .feedback.bad { background: rgba(248, 81, 73, 0.15); border: 1px solid var(--bad); color: #ffa198; }
+  .feedback.info { background: rgba(88, 166, 255, 0.12); border: 1px solid var(--accent); color: #a5c9ff; }
+
+  /* Grid cells (shared) */
+  .grid {
+    display: grid;
+    gap: 4px;
+    margin: 12px 0;
+  }
+
+  .cell {
+    background: var(--panel-2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.1s, transform 0.05s;
+    font-size: 18px;
+  }
+  .cell:hover:not(.disabled) { background: #2a3340; }
+  .cell:active:not(.disabled) { transform: scale(0.95); }
+  .cell.selected { background: var(--accent); color: var(--bg); }
+  .cell.wall { background: #30363d; cursor: default; }
+  .cell.path { background: #1f6feb55; }
+  .cell.goal { background: #3fb950; color: var(--bg); }
+  .cell.start { background: #f0883e; color: var(--bg); }
+  .cell.disabled { cursor: default; }
+
+  .legend {
+    display: flex;
+    gap: 14px;
+    font-size: 12px;
+    color: var(--muted);
+    margin: 8px 0;
+    flex-wrap: wrap;
+  }
+  .legend .swatch {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border-radius: 3px;
+    margin-right: 5px;
+    vertical-align: middle;
+  }
+
+  .toolbar {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin: 10px 0;
+  }
+
+  .hint-area {
+    background: rgba(227, 179, 65, 0.08);
+    border-left: 3px solid var(--gold);
+    padding: 10px 14px;
+    margin: 12px 0;
+    font-size: 14px;
+    border-radius: 0 6px 6px 0;
+    color: #f0d889;
+  }
+  .hint-area code {
+    background: rgba(0,0,0,0.3);
+    padding: 1px 6px;
+    border-radius: 3px;
+    font-size: 13px;
+  }
+
+  .code-block-display {
+    background: #010409;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 14px;
+    font-family: "Cascadia Code", Consolas, monospace;
+    font-size: 13px;
+    overflow-x: auto;
+    color: #c9d1d9;
+    line-height: 1.5;
+    white-space: pre;
+    margin: 10px 0;
+  }
+
+  .symbol-row {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin: 12px 0;
+  }
+
+  .symbol-card {
+    width: 70px;
+    height: 70px;
+    background: var(--panel-2);
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .symbol-card.used {
+    opacity: 0.3;
+    cursor: not-allowed;
+  }
+  .symbol-card.slot {
+    border-style: dashed;
+    background: rgba(88, 166, 255, 0.05);
+  }
+  .symbol-card.slot.filled {
+    border-style: solid;
+    background: rgba(88, 166, 255, 0.2);
+  }
+
+  .puzzle-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 80px);
+    gap: 6px;
+    margin: 12px 0;
+  }
+
+  .node {
+    width: 80px;
+    height: 80px;
+    background: var(--panel-2);
+    border: 2px solid var(--border);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    cursor: pointer;
+    transition: all 0.15s;
+    position: relative;
+  }
+  .node.filled { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+  .node.active { box-shadow: 0 0 0 3px var(--gold); }
+  .node-label {
+    position: absolute;
+    top: -22px;
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  .lines-canvas {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: -1;
+  }
+
+  .puzzle-container {
+    position: relative;
+    padding: 30px 20px 20px;
+  }
+
+  .word-display {
+    display: flex;
+    gap: 6px;
+    margin: 12px 0;
+    flex-wrap: wrap;
+  }
+  .word-slot {
+    width: 44px;
+    height: 50px;
+    background: var(--panel-2);
+    border: 2px solid var(--border);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+  .word-slot.space { width: 20px; border: none; background: transparent; }
+  .word-slot.filled { background: rgba(88, 166, 255, 0.15); border-color: var(--accent); }
+
+  .vault-screen {
+    text-align: center;
+    padding: 30px 20px;
+  }
+  .vault-screen h2 {
+    color: var(--gold);
+    font-size: 32px;
+    margin: 20px 0 10px;
+  }
+  .vault-screen .vault-content {
+    background: var(--panel-2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px;
+    margin: 20px 0;
+    font-size: 16px;
+    line-height: 1.7;
+    color: #d0d7de;
+    font-style: italic;
+  }
+
+  .timer-bar {
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+    margin-top: 6px;
+  }
+  .timer-fill {
+    height: 100%;
+    background: var(--accent);
+    transition: width 0.2s linear;
+  }
+
+  .keypad {
+    display: grid;
+    grid-template-columns: repeat(3, 60px);
+    gap: 8px;
+    justify-content: center;
+    margin: 14px 0;
+  }
+  .key {
+    height: 60px;
+    background: var(--panel-2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-size: 20px;
+    cursor: pointer;
+    color: var(--text);
+    font-family: inherit;
+    transition: background 0.1s;
+  }
+  .key:hover { background: #2a3340; }
+
+  .keypad-display {
+    background: var(--panel-2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 14px;
+    font-size: 24px;
+    font-family: "Cascadia Code", Consolas, monospace;
+    text-align: center;
+    letter-spacing: 8px;
+    min-height: 56px;
+    margin: 12px auto;
+    max-width: 200px;
+  }
+
+  .lock-pattern {
+    display: grid;
+    grid-template-columns: repeat(3, 70px);
+    gap: 8px;
+    justify-content: center;
+    margin: 14px 0;
+  }
+  .lock-dot {
+    width: 70px;
+    height: 70px;
+    background: var(--panel-2);
+    border: 2px solid var(--border);
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .lock-dot.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    box-shadow: 0 0 12px rgba(88, 166, 255, 0.5);
+  }
+
+  .secrets-log {
+    background: var(--panel-2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 12px;
+    font-size: 13px;
+    max-height: 120px;
+    overflow-y: auto;
+    font-family: "Cascadia Code", Consolas, monospace;
+  }
+  .secrets-log .entry {
+    padding: 2px 0;
+    border-bottom: 1px dashed var(--border);
+    color: var(--muted);
+  }
+  .secrets-log .entry:last-child { border-bottom: none; }
+  .secrets-log .entry strong { color: var(--gold); }
+
+  footer {
+    text-align: center;
+    color: var(--muted);
+    font-size: 12px;
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+  }
+
+  @media (max-width: 600px) {
+    .hud { grid-template-columns: repeat(2, 1fr); }
+    .puzzle-grid { grid-template-columns: repeat(4, 60px); }
+    .node { width: 60px; height: 60px; font-size: 14px; }
+  }
+</style>
 </head>
 <body>
-  <main>
-    <h1>Exclusive Access</h1>
-    <p class="lead">Enter your access key to load the page.</p>
+<div class="app">
+  <header>
+    <h1>🗝️ The Cartographer's Vault</h1>
+    <p class="subtitle">A sequence of puzzles guarding an ancient secret. Solve them all to claim the prize.</p>
+  </header>
 
-    <div class="panel" id="gate">
-      <label for="key">Access key</label>
-      <input type="password" id="key" autocomplete="off" autofocus />
-      <div class="msg" id="msg"></div>
-      <div class="actions">
-        <button id="unlock-btn" type="button">Unlock</button>
-      </div>
+  <div class="hud">
+    <div class="stat">
+      <div class="label">Stage</div>
+      <div class="value" id="stageNum">1 / 6</div>
     </div>
+    <div class="stat">
+      <div class="label">Elapsed</div>
+      <div class="value" id="elapsed">00:00</div>
+    </div>
+    <div class="stat">
+      <div class="label">Hints Used</div>
+      <div class="value" id="hintsUsed">0</div>
+    </div>
+    <div class="stat">
+      <div class="label">Vault Key</div>
+      <div class="value" id="vaultProgress">0 / 6</div>
+      <div class="timer-bar"><div class="timer-fill" id="progressFill" style="width:0%"></div></div>
+    </div>
+  </div>
 
-    <div id="app" class="status" hidden>Loading…</div>
-  </main>
+  <div id="stageArea"></div>
 
-  <script>
-    (function () {
-      var gate = document.getElementById("gate");
-      var keyInput = document.getElementById("key");
-      var msg = document.getElementById("msg");
-      var unlockBtn = document.getElementById("unlock-btn");
-      var app = document.getElementById("app");
+  <div class="panel">
+    <div style="display:flex; justify-content: space-between; align-items: center;">
+      <strong style="color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Discovered Secrets</strong>
+      <button class="secondary" onclick="game.resetGame()" style="font-size: 12px; padding: 6px 12px;">Reset Game</button>
+    </div>
+    <div class="secrets-log" id="secretsLog">
+      <div class="entry">The vault awaits...</div>
+    </div>
+  </div>
 
-      function pad32(bytes) {
-        var out = new Uint8Array(32);
-        out.set(bytes.subarray(0, 32));
-        if (bytes.length < 32) out.fill(0x30, bytes.length); // '0'
-        return out;
-      }
+  <footer>
+    A self-contained puzzle game — no dependencies, just patience and reasoning.
+  </footer>
+</div>
 
-      function hexOf(buf) {
-        var arr = new Uint8Array(buf);
-        var s = "";
-        for (var i = 0; i < arr.length; i++) {
-          s += arr[i].toString(16).padStart(2, "0");
-        }
-        return s;
-      }
+<script>
+/* ============================================================
+   The Cartographer's Vault
+   A 6-stage puzzle game. ~10-30 minutes to complete.
+   ============================================================ */
 
-      function b64ToBytes(b64) {
-        var bin = atob(b64);
-        var out = new Uint8Array(bin.length);
-        for (var i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
-        return out;
-      }
+const game = {
+  stage: 0,
+  startTime: Date.now(),
+  hintsUsed: 0,
+  secretsDiscovered: [],
+  stagesCompleted: 0,
 
-      function showError(text) {
-        msg.textContent = text;
-        msg.className = "msg error";
-      }
+  init() {
+    this.loadState();
+    this.tick();
+    setInterval(() => this.tick(), 1000);
+    this.renderStage();
+  },
 
-      function showApp(html) {
-        gate.hidden = true;
-        app.hidden = false;
-        app.className = "";
-        app.innerHTML = html;
-      }
-
-      function showAppError(text) {
-        gate.hidden = true;
-        app.hidden = false;
-        app.className = "status error";
-        app.textContent = text;
-      }
-
-      async function loadPage(secretKey) {
-        try {
-          var enc = new TextEncoder();
-          var hashBuf = await crypto.subtle.digest("SHA-256", enc.encode(secretKey));
-          var storageHash = hexOf(hashBuf);
-
-          // Absolute URL: works regardless of how the SPA was reached (#hash, /, /index.html, subpath).
-          var base = location.origin + location.pathname.replace(/[^/]*$/, "");
-          var url = base + "data/" + storageHash + ".json";
-          console.log("[Exclusive] fetching", url);
-
-          var resp = await fetch(url, { cache: "no-store" });
-          if (!resp.ok) throw new Error("HTTP " + resp.status + " fetching " + url);
-          // GitHub Pages sometimes serves .json as text/plain — parse text manually.
-          var text = await resp.text();
-          var payload;
-          try { payload = JSON.parse(text); }
-          catch (pe) { throw new Error("payload parse failed: " + pe.message); }
-          if (payload.alg !== "AES-256-GCM") throw new Error("unknown alg: " + payload.alg);
-
-          var keyBytes = pad32(enc.encode(secretKey));
-          var key = await crypto.subtle.importKey(
-            "raw", keyBytes, { name: "AES-GCM" }, false, ["decrypt"]
-          );
-
-          var iv = b64ToBytes(payload.iv);
-          var ct = b64ToBytes(payload.ct);
-          var plain;
-          try {
-            plain = await crypto.subtle.decrypt({ name: "AES-GCM", iv: iv }, key, ct);
-          } catch (de) {
-            throw new Error("decrypt failed: " + (de.name || de.message));
-          }
-          var html = new TextDecoder().decode(plain);
-          showApp(html);
-        } catch (err) {
-          console.error("[Exclusive] loadPage error:", err);
-          showAppError("Access denied: " + (err && err.message ? err.message : String(err)));
+  loadState() {
+    try {
+      const saved = JSON.parse(localStorage.getItem('cartographerVault') || '{}');
+      if (saved.stage !== undefined) {
+        if (confirm('Resume your previous game?')) {
+          this.stage = saved.stage;
+          this.hintsUsed = saved.hintsUsed || 0;
+          this.secretsDiscovered = saved.secretsDiscovered || [];
+          this.stagesCompleted = saved.stagesCompleted || 0;
+          if (saved.startTime) this.startTime = saved.startTime;
+        } else {
+          localStorage.removeItem('cartographerVault');
         }
       }
+    } catch (e) {}
+    this.refreshSecretsLog();
+  },
 
-      function tryUnlock() {
-        var key = keyInput.value;
-        if (!key) { showError("Please enter a key."); return; }
-        msg.textContent = "";
-        msg.className = "msg";
-        loadPage(key);
+  saveState() {
+    localStorage.setItem('cartographerVault', JSON.stringify({
+      stage: this.stage,
+      hintsUsed: this.hintsUsed,
+      secretsDiscovered: this.secretsDiscovered,
+      stagesCompleted: this.stagesCompleted,
+      startTime: this.startTime,
+    }));
+  },
+
+  resetGame() {
+    if (confirm('Reset the entire game? Progress will be lost.')) {
+      localStorage.removeItem('cartographerVault');
+      location.reload();
+    }
+  },
+
+  tick() {
+    const elapsed = Math.floor((Date.now() - this.startTime) / 1000);
+    const m = String(Math.floor(elapsed / 60)).padStart(2, '0');
+    const s = String(elapsed % 60).padStart(2, '0');
+    document.getElementById('elapsed').textContent = `${m}:${s}`;
+    document.getElementById('hintsUsed').textContent = this.hintsUsed;
+  },
+
+  refreshSecretsLog() {
+    const log = document.getElementById('secretsLog');
+    if (this.secretsDiscovered.length === 0) {
+      log.innerHTML = '<div class="entry">The vault awaits...</div>';
+    } else {
+      log.innerHTML = this.secretsDiscovered
+        .map(s => `<div class="entry">${s}</div>`).join('');
+      log.scrollTop = log.scrollHeight;
+    }
+  },
+
+  addSecret(text) {
+    this.secretsDiscovered.push(text);
+    this.refreshSecretsLog();
+    this.saveState();
+  },
+
+  advance() {
+    this.stagesCompleted++;
+    this.saveState();
+    document.getElementById('vaultProgress').textContent = `${this.stagesCompleted} / 6`;
+    document.getElementById('progressFill').style.width = `${(this.stagesCompleted / 6) * 100}%`;
+    setTimeout(() => {
+      this.stage++;
+      this.saveState();
+      if (this.stage >= STAGES.length) {
+        this.renderVictory();
+      } else {
+        this.renderStage();
       }
+    }, 1400);
+  },
 
-      unlockBtn.addEventListener("click", tryUnlock);
-      keyInput.addEventListener("keydown", function (e) {
-        if (e.key === "Enter") tryUnlock();
-      });
+  renderStage() {
+    document.getElementById('stageNum').textContent = `${this.stage + 1} / ${STAGES.length}`;
+    const def = STAGES[this.stage];
+    const area = document.getElementById('stageArea');
+    area.innerHTML = `
+      <div class="panel">
+        <h2 class="stage-title">${def.title}</h2>
+        <p class="stage-flavor">${def.flavor}</p>
+        <div id="puzzleArea"></div>
+      </div>
+    `;
+    def.render(document.getElementById('puzzleArea'));
+  },
 
-      // Direct entry: if URL already has a #SecretKey, try it.
-      var hashKey = (location.hash || "").replace(/^#/, "");
-      if (hashKey) {
-        gate.hidden = true;
-        app.hidden = false;
-        loadPage(hashKey);
+  useHint() {
+    this.hintsUsed++;
+    this.saveState();
+    document.getElementById('hintsUsed').textContent = this.hintsUsed;
+  },
+
+  renderVictory() {
+    const elapsed = Math.floor((Date.now() - this.startTime) / 1000);
+    const m = Math.floor(elapsed / 60);
+    const s = elapsed % 60;
+    document.getElementById('stageArea').innerHTML = `
+      <div class="panel vault-screen">
+        <div style="font-size: 64px;">🏆</div>
+        <h2>The Vault Opens!</h2>
+        <p class="stage-flavor">You have proven yourself a worthy cartographer.</p>
+        <div class="vault-content">
+          "Herein lies the secret of the Northern Passage:<br><br>
+          <strong style="color: var(--gold);">MAPS ARE NOT FOUND — THEY ARE UNFOLDED.</strong><br><br>
+          Each puzzle you solved was a fold in the great chart of the world.
+          The compass never pointed north; it always pointed to <em>understanding</em>.<br><br>
+          Carry this wisdom beyond the vault. The world is yours to chart."
+        </div>
+        <p style="color: var(--muted);">Completed in <strong style="color: var(--gold);">${m}m ${s}s</strong>
+        with <strong style="color: var(--gold);">${this.hintsUsed}</strong> hint(s) used.</p>
+        <button onclick="game.resetGame()">Begin Anew</button>
+      </div>
+    `;
+    document.getElementById('stageNum').textContent = '✓ Done';
+    localStorage.removeItem('cartographerVault');
+  }
+};
+
+/* ============================================================
+   STAGE 1: The Riddle of the Compass
+   A simple riddle with a multi-step numeric answer.
+   ============================================================ */
+const stage1 = {
+  title: 'Stage 1 — The Riddle of the Compass',
+  flavor: 'A bronze compass sits on a pedestal, its needle spinning until you speak the answer that calms it.',
+  hintsRemaining: 2,
+  hints: [
+    'The answer is the number of points on a traditional mariner\'s compass rose.',
+    'The answer is 32.',
+  ],
+
+  render(container) {
+    container.innerHTML = `
+      <p>Carved into the compass are these words:</p>
+      <div class="vault-content" style="text-align: center; font-size: 17px;">
+        "I have 32 faces, yet no eyes.<br>
+        Sailors follow me through stormy skies.<br>
+        My brothers include the North Star's kin —<br>
+        Tell me the number: how many am I within?"
+      </div>
+      <div class="hint-area" id="hint1" style="display:none"></div>
+      <div class="input-row">
+        <input type="text" id="riddleAnswer" placeholder="Your answer (a number)" autocomplete="off" />
+        <button onclick="stage1.check()">Speak Answer</button>
+        <button class="secondary" onclick="stage1.showHint()">Use Hint (${this.hintsRemaining} left)</button>
+      </div>
+      <div class="feedback" id="riddleFeedback"></div>
+    `;
+    document.getElementById('riddleAnswer').addEventListener('keydown', e => {
+      if (e.key === 'Enter') stage1.check();
+    });
+  },
+
+  showHint() {
+    if (this.hintsRemaining <= 0) return;
+    this.hintsRemaining--;
+    game.useHint();
+    const used = 2 - this.hintsRemaining - 1;
+    const hintEl = document.getElementById('hint1');
+    hintEl.style.display = 'block';
+    hintEl.innerHTML = `💡 <strong>Hint:</strong> ${this.hints[used]}`;
+    const btn = document.querySelector('[onclick="stage1.showHint()"]');
+    if (this.hintsRemaining > 0) btn.textContent = `Use Hint (${this.hintsRemaining} left)`;
+    else btn.disabled = true;
+  },
+
+  check() {
+    const input = document.getElementById('riddleAnswer');
+    const fb = document.getElementById('riddleFeedback');
+    const val = input.value.trim();
+    if (val === '32') {
+      fb.className = 'feedback show good';
+      fb.innerHTML = '✓ The needle stills. The compass points to the next chamber.';
+      game.addSecret('<strong>Stage 1 cleared:</strong> The compass yields — 32 points guide the way.');
+      game.advance();
+    } else if (val === '') {
+      fb.className = 'feedback show info';
+      fb.innerHTML = 'Speak a number to the compass.';
+    } else {
+      fb.className = 'feedback show bad';
+      fb.innerHTML = `✗ The compass spins wildly. "${val}" is not the answer.`;
+      input.select();
+    }
+  }
+};
+
+/* ============================================================
+   STAGE 2: The Locked Door
+   Find the 3-digit code from clues embedded in the room.
+   ============================================================ */
+const stage2 = {
+  title: 'Stage 2 — The Locked Door',
+  flavor: 'A heavy iron door blocks your path. Three rotating dials need a 3-digit combination.',
+  hintsRemaining: 3,
+  hints: [
+    'The painting, the book, and the inscription all describe the same number.',
+    'The painting shows 7 figures. The book has 7 chapters listed. The inscription mentions the 7th letter.',
+    'The first digit comes from the count of figures; the middle digit is from the chapter count; the last is from "G".',
+  ],
+  found: { first: null, second: null, third: null },
+
+  render(container) {
+    container.innerHTML = `
+      <p>Around the door you notice three artifacts, each giving a digit:</p>
+      <div class="grid" style="grid-template-columns: repeat(3, 1fr); gap: 14px;">
+        <div class="panel" style="margin: 0;">
+          <strong>🖼️ A Painting</strong>
+          <p style="font-size: 13px; color: var(--muted); margin: 8px 0;">
+            "Seven wanderers beneath a crescent moon, each carrying a single star."
+          </p>
+          <div style="font-size: 28px; text-align: center;">🌙 ⭐⭐⭐⭐⭐⭐⭐</div>
+          <button class="secondary" style="margin-top: 10px; width: 100%;"
+            onclick="stage2.submitDigit('first')">Use this digit</button>
+        </div>
+        <div class="panel" style="margin: 0;">
+          <strong>📖 An Open Book</strong>
+          <p style="font-size: 13px; color: var(--muted); margin: 8px 0;">
+            Chapters listed: I, II, III, IV, V, VI, <strong>VII</strong>, VIII...
+          </p>
+          <div class="code-block-display" style="margin: 0;">
+Chapter VII: The Lock
+"The final digit lies in the seventh seal."
+          </div>
+          <button class="secondary" style="margin-top: 10px; width: 100%;"
+            onclick="stage2.submitDigit('second')">Use this digit</button>
+        </div>
+        <div class="panel" style="margin: 0;">
+          <strong>🪨 Stone Inscription</strong>
+          <p style="font-size: 13px; color: var(--muted); margin: 8px 0;">
+            "The third digit is the position of <strong>G</strong> in our alphabet."
+          </p>
+          <div style="font-size: 18px; text-align: center; letter-spacing: 8px; font-family: monospace;">
+            A B C D E F G H I
+          </div>
+          <button class="secondary" style="margin-top: 10px; width: 100%;"
+            onclick="stage2.submitDigit('third')">Use this digit</button>
+        </div>
+      </div>
+
+      <div id="digitSlots" style="display: flex; gap: 14px; margin: 16px 0; justify-content: center;">
+        <div class="word-slot" id="slot1" style="width: 60px; height: 70px; font-size: 32px;">?</div>
+        <div class="word-slot" id="slot2" style="width: 60px; height: 70px; font-size: 32px;">?</div>
+        <div class="word-slot" id="slot3" style="width: 60px; height: 70px; font-size: 32px;">?</div>
+      </div>
+
+      <div class="hint-area" id="hint2" style="display:none"></div>
+      <div class="toolbar" style="justify-content: center;">
+        <button onclick="stage2.tryOpen()">Try Combination</button>
+        <button class="secondary" onclick="stage2.reset()">Reset</button>
+        <button class="secondary" onclick="stage2.showHint()">Hint (${this.hintsRemaining})</button>
+      </div>
+      <div class="feedback" id="lockFeedback"></div>
+    `;
+  },
+
+  submitDigit(position) {
+    const digits = { first: 7, second: 7, third: 7 };
+    this.found[position] = digits[position];
+    const slotMap = { first: 'slot1', second: 'slot2', third: 'slot3' };
+    document.getElementById(slotMap[position]).textContent = digits[position];
+    document.getElementById(slotMap[position]).classList.add('filled');
+    const fb = document.getElementById('lockFeedback');
+    fb.className = 'feedback show info';
+    fb.innerHTML = `Digit ${position} noted: ${digits[position]}`;
+  },
+
+  reset() {
+    this.found = { first: null, second: null, third: null };
+    ['slot1', 'slot2', 'slot3'].forEach(id => {
+      document.getElementById(id).textContent = '?';
+      document.getElementById(id).classList.remove('filled');
+    });
+    document.getElementById('lockFeedback').className = 'feedback';
+  },
+
+  showHint() {
+    if (this.hintsRemaining <= 0) return;
+    this.hintsRemaining--;
+    game.useHint();
+    const used = 3 - this.hintsRemaining - 1;
+    const hintEl = document.getElementById('hint2');
+    hintEl.style.display = 'block';
+    hintEl.innerHTML = `💡 <strong>Hint:</strong> ${this.hints[used]}`;
+  },
+
+  tryOpen() {
+    const fb = document.getElementById('lockFeedback');
+    if (this.found.first === null || this.found.second === null || this.found.third === null) {
+      fb.className = 'feedback show bad';
+      fb.innerHTML = '✗ You must consult all three artifacts first.';
+      return;
+    }
+    fb.className = 'feedback show good';
+    fb.innerHTML = '✓ <strong>CLICK.</strong> The door groans open.';
+    game.addSecret('<strong>Stage 2 cleared:</strong> Combination 7-7-7 — the wanderers, the chapter, the letter.');
+    game.advance();
+  }
+};
+
+/* ============================================================
+   STAGE 3: The Cipher of Symbols
+   Match cipher symbols to letters using given clues.
+   ============================================================ */
+const stage3 = {
+  title: 'Stage 3 — The Cipher of Symbols',
+  flavor: 'A wall of strange symbols covers the stone. Each symbol stands for a letter — figure out which to read the hidden word.',
+  hintsRemaining: 3,
+  hints: [
+    'The word has 6 characters. Use the given letter clues to decode.',
+    'The word reads "CIPHER". The answer is CIPHER.',
+    'Look at the clue letters and try common English 6-letter words.',
+  ],
+
+  cipher: {
+    '☀': 'C', '☾': 'I', '✦': 'P', '✶': 'H', '✷': 'E', '✸': 'R'
+  },
+
+  // Shuffled symbol order for display
+  symbolOrder: ['✸', '☾', '✶', '☀', '✷', '✦'],
+
+  render(container) {
+    this.assignments = {};
+    this.usedSymbols = new Set();
+    this.currentSlot = 0;
+
+    const cipher = this.cipher;
+    const order = this.symbolOrder;
+    const word = 'CIPHER';
+
+    container.innerHTML = `
+      <p>You find a parchment with several clues:</p>
+      <div class="code-block-display">
+• The word has <strong>6 letters</strong>.
+• The first letter is C (already given).
+• The last letter is a common letter at the end of "decipher" but not the same as the first.
+• Letters 2, 5 come before M in the alphabet.
+• Two letters repeat; the third letter is the 8th letter of the alphabet.
+      </div>
+
+      <p><strong>Cipher Key (drag a symbol onto each slot):</strong></p>
+      <div class="symbol-row" id="symbolPalette">
+        ${order.map(sym => `
+          <div class="symbol-card" data-symbol="${sym}" onclick="stage3.useSymbol('${sym}')">
+            ${sym}
+          </div>
+        `).join('')}
+      </div>
+
+      <p><strong>Decode the word:</strong></p>
+      <div class="word-display" id="wordDisplay">
+        ${word.split('').map((ch, i) => `
+          <div class="word-slot slot" data-idx="${i}" onclick="stage3.removeSlot(${i})"
+            id="slot_${i}">${i === 0 ? 'C' : ''}</div>
+        `).join('')}
+      </div>
+
+      <div class="hint-area" id="hint3" style="display:none"></div>
+      <div class="toolbar" style="justify-content: center;">
+        <button onclick="stage3.check()">Decode</button>
+        <button class="secondary" onclick="stage3.clearSlots()">Clear</button>
+        <button class="secondary" onclick="stage3.showHint()">Hint (${this.hintsRemaining})</button>
+      </div>
+      <div class="feedback" id="cipherFeedback"></div>
+    `;
+  },
+
+  useSymbol(sym) {
+    if (this.usedSymbols.has(sym)) return;
+    const target = this.currentSlot < 6 ? this.currentSlot : 1;
+    // Skip slot 0 (already C)
+    let slot = this.currentSlot;
+    if (slot === 0) slot = 1;
+    if (slot > 5) return;
+    this.assignments[slot] = sym;
+    document.getElementById(`slot_${slot}`).textContent = sym;
+    document.getElementById(`slot_${slot}`).classList.add('filled');
+    this.usedSymbols.add(sym);
+    document.querySelector(`[data-symbol="${sym}"]`).classList.add('used');
+    this.currentSlot++;
+  },
+
+  removeSlot(idx) {
+    if (idx === 0) return; // First slot locked to C
+    const sym = this.assignments[idx];
+    if (!sym) return;
+    delete this.assignments[idx];
+    document.getElementById(`slot_${idx}`).textContent = '';
+    document.getElementById(`slot_${idx}`).classList.remove('filled');
+    this.usedSymbols.delete(sym);
+    document.querySelector(`[data-symbol="${sym}"]`).classList.remove('used');
+    if (this.currentSlot > idx) this.currentSlot = idx;
+  },
+
+  clearSlots() {
+    for (let i = 1; i <= 5; i++) this.removeSlot(i);
+    this.currentSlot = 1;
+  },
+
+  showHint() {
+    if (this.hintsRemaining <= 0) return;
+    this.hintsRemaining--;
+    game.useHint();
+    const used = 3 - this.hintsRemaining - 1;
+    document.getElementById('hint3').style.display = 'block';
+    document.getElementById('hint3').innerHTML = `💡 <strong>Hint:</strong> ${this.hints[used]}`;
+  },
+
+  check() {
+    const fb = document.getElementById('cipherFeedback');
+    if (Object.keys(this.assignments).length !== 5) {
+      fb.className = 'feedback show bad';
+      fb.innerHTML = '✗ Fill all 5 remaining slots first.';
+      return;
+    }
+    let word = 'C';
+    for (let i = 1; i <= 5; i++) word += this.cipher[this.assignments[i]] || '?';
+    if (word === 'CIPHER') {
+      fb.className = 'feedback show good';
+      fb.innerHTML = `✓ The word is revealed: <strong>CIPHER</strong>. The wall slides open.`;
+      game.addSecret('<strong>Stage 3 cleared:</strong> Decoded the cipher — CIPHER.');
+      game.advance();
+    } else {
+      fb.className = 'feedback show bad';
+      fb.innerHTML = `✗ That spells "${word}" — incorrect. Try again.`;
+    }
+  }
+};
+
+/* ============================================================
+   STAGE 4: The Pattern Lock
+   Click dots in the correct sequence.
+   ============================================================ */
+const stage4 = {
+  title: 'Stage 4 — The Pattern Lock',
+  flavor: 'A circular lock with 9 dots arranged 3×3. Trace the pattern to proceed.',
+  hintsRemaining: 3,
+  hints: [
+    'The pattern is the sign of balance — five points forming a plus.',
+    'The dots include the top, bottom, left, right, and center. Trace top to bottom first.',
+    'Try: 1 → 4 → 7 → 5 → 3.',
+  ],
+
+  sequence: [],
+  correctSequence: [1, 4, 7, 5, 3],
+  cellStates: Array(9).fill(false),
+
+  render(container) {
+    container.innerHTML = `
+      <p>Below the lock is etched a riddle:</p>
+      <div class="vault-content" style="text-align: center;">
+        "I stand where the four cardinal arms meet the heart of the world.<br>
+        My shape is the sign of balance — vertical, then horizontal.<br>
+        Trace me in five touches."
+      </div>
+
+      <div class="lock-pattern">
+        ${Array(9).fill(0).map((_, i) => `
+          <div class="lock-dot" id="lock_${i}" data-idx="${i}"
+            onclick="stage4.toggle(${i})"></div>
+        `).join('')}
+      </div>
+
+      <div class="hint-area" id="hint4" style="display:none"></div>
+      <div class="toolbar" style="justify-content: center;">
+        <button onclick="stage4.check()">Test Pattern</button>
+        <button class="secondary" onclick="stage4.reset()">Reset</button>
+        <button class="secondary" onclick="stage4.showHint()">Hint (${this.hintsRemaining})</button>
+      </div>
+      <div class="feedback" id="patternFeedback"></div>
+    `;
+  },
+
+  toggle(idx) {
+    if (!this.sequence.includes(idx)) {
+      this.sequence.push(idx);
+      document.getElementById(`lock_${idx}`).classList.add('active');
+    }
+  },
+
+  reset() {
+    this.sequence = [];
+    for (let i = 0; i < 9; i++) {
+      document.getElementById(`lock_${i}`).classList.remove('active');
+    }
+    document.getElementById('patternFeedback').className = 'feedback';
+  },
+
+  showHint() {
+    if (this.hintsRemaining <= 0) return;
+    this.hintsRemaining--;
+    game.useHint();
+    const used = 3 - this.hintsRemaining - 1;
+    document.getElementById('hint4').style.display = 'block';
+    document.getElementById('hint4').innerHTML = `💡 <strong>Hint:</strong> ${this.hints[used]}`;
+  },
+
+  check() {
+    const fb = document.getElementById('patternFeedback');
+    if (this.sequence.length !== 5) {
+      fb.className = 'feedback show bad';
+      fb.innerHTML = '✗ The lock needs exactly 5 touches.';
+      setTimeout(() => this.reset(), 800);
+      return;
+    }
+    const matches = this.sequence.every((v, i) => v === this.correctSequence[i]);
+    if (matches) {
+      fb.className = 'feedback show good';
+      fb.innerHTML = '✓ The lock clicks. A passage opens.';
+      game.addSecret('<strong>Stage 4 cleared:</strong> Traced the cross of balance.');
+      game.advance();
+    } else {
+      fb.className = 'feedback show bad';
+      fb.innerHTML = '✗ The lock rejects your pattern. Try again.';
+      setTimeout(() => this.reset(), 1000);
+    }
+  }
+};
+
+/* ============================================================
+   STAGE 5: The Maze
+   Navigate from S to G through a stone labyrinth.
+   ============================================================ */
+const stage5 = {
+  title: 'Stage 5 — The Stone Labyrinth',
+  flavor: 'A winding maze carved into stone. Find the path from START to GOAL.',
+  hintsRemaining: 2,
+  hints: [
+    'Try the top row first, then dive down the right side, then sweep along the bottom.',
+    'Path: (0,0)→(0,1)→(0,2)→(0,3)→(1,3)→(2,3)→(2,2)→(2,1)→(2,0)→(3,0)→(4,0)→(4,1)→(4,2)→(4,3)→(4,4)→(4,5)→(5,5).',
+  ],
+
+  // 6x6 maze. 0=open, 1=wall. Start=(0,0), Goal=(5,5).
+  grid: [
+    [0,0,0,0,1,0],
+    [1,1,1,0,1,0],
+    [0,0,0,0,0,0],
+    [0,1,1,1,1,1],
+    [0,0,0,0,0,0],
+    [1,1,1,1,1,0],
+  ],
+
+  playerR: 0, playerC: 0,
+  goalR: 5, goalC: 5,
+  rows: 6, cols: 6,
+  steps: 0,
+
+  render(container) {
+    this.steps = 0;
+    this.playerR = 0;
+    this.playerC = 0;
+    container.innerHTML = `
+      <p>Navigate <span style="color: var(--warn);">★</span> START to <span style="color: var(--good);">◆</span> GOAL. Click any adjacent open cell to step there.</p>
+      <div style="display: flex; align-items: center; gap: 16px; flex-wrap: wrap;">
+        <div class="grid" id="mazeGrid" style="grid-template-columns: repeat(${this.cols}, 50px); margin: 0;"></div>
+        <div>
+          <div class="stat" style="min-width: 120px;">
+            <div class="label">Steps Taken</div>
+            <div class="value" id="stepCount">0</div>
+          </div>
+          <button class="secondary" onclick="stage5.reset()" style="margin-top: 8px; width: 100%;">Reset</button>
+        </div>
+      </div>
+      <div class="hint-area" id="hint5" style="display:none"></div>
+      <div class="toolbar">
+        <button class="secondary" onclick="stage5.showHint()">Hint (${this.hintsRemaining})</button>
+      </div>
+      <div class="feedback" id="mazeFeedback"></div>
+    `;
+    this.drawMaze();
+  },
+
+  drawMaze() {
+    const grid = document.getElementById('mazeGrid');
+    grid.innerHTML = '';
+    for (let r = 0; r < this.rows; r++) {
+      for (let c = 0; c < this.cols; c++) {
+        const cell = document.createElement('div');
+        cell.className = 'cell';
+        cell.style.width = '50px';
+        cell.style.fontSize = '20px';
+        if (this.grid[r][c] === 1) {
+          cell.classList.add('wall');
+          cell.textContent = '■';
+        } else if (r === this.playerR && c === this.playerC) {
+          cell.classList.add('start');
+          cell.textContent = '★';
+        } else if (r === this.goalR && c === this.goalC) {
+          cell.classList.add('goal');
+          cell.textContent = '◆';
+        } else {
+          cell.textContent = '';
+          cell.onclick = () => this.move(r, c);
+        }
+        grid.appendChild(cell);
       }
-    })();
-  </script>
+    }
+  },
+
+  move(r, c) {
+    const dRow = Math.abs(r - this.playerR);
+    const dCol = Math.abs(c - this.playerC);
+    if ((dRow + dCol) !== 1) return;
+    if (this.grid[r][c] === 1) return;
+
+    this.playerR = r;
+    this.playerC = c;
+    this.steps++;
+    document.getElementById('stepCount').textContent = this.steps;
+
+    if (r === this.goalR && c === this.goalC) {
+      document.getElementById('mazeFeedback').className = 'feedback show good';
+      document.getElementById('mazeFeedback').innerHTML = `✓ You reach the goal in <strong>${this.steps}</strong> steps!`;
+      game.addSecret(`<strong>Stage 5 cleared:</strong> Navigated the labyrinth in ${this.steps} steps.`);
+      game.advance();
+    } else {
+      this.drawMaze();
+    }
+  },
+
+  reset() {
+    this.render(document.getElementById('puzzleArea'));
+  },
+
+  showHint() {
+    if (this.hintsRemaining <= 0) return;
+    this.hintsRemaining--;
+    game.useHint();
+    const used = 2 - this.hintsRemaining - 1;
+    document.getElementById('hint5').style.display = 'block';
+    document.getElementById('hint5').innerHTML = `💡 <strong>Hint:</strong> ${this.hints[used]}`;
+  }
+};
+
+/* ============================================================
+   STAGE 6: The Final Code
+   A keypad puzzle where the correct code is hidden in the previous puzzles' solutions.
+   ============================================================ */
+const stage6 = {
+  title: 'Stage 6 — The Vault Code',
+  flavor: 'A final keypad. The previous puzzles all contributed to this moment. What have you learned?',
+  hintsRemaining: 2,
+  hints: [
+    'The code is 4 digits. Each digit comes from a different stage.',
+    'Compass: 3+2=5. Door: 7. Cipher word length: 6. Labyrinth: count your steps (a small number).',
+    'The code is 5-7-6-5.',
+  ],
+
+  code: '5765',
+  entered: '',
+
+  render(container) {
+    container.innerHTML = `
+      <p>Before you stands the final vault door. A keypad glows softly. You recall the artifacts you encountered...</p>
+      <div class="vault-content" style="text-align: center;">
+        "Four numbers shall open what was sealed:<br>
+        From the compass, from the lock, from the cipher, from the maze.<br>
+        Each puzzle gave you one. Add them together in wisdom."
+      </div>
+
+      <div class="keypad-display" id="keypadDisplay">_ _ _ _</div>
+
+      <div class="keypad">
+        <button class="key" onclick="stage6.press('1')">1</button>
+        <button class="key" onclick="stage6.press('2')">2</button>
+        <button class="key" onclick="stage6.press('3')">3</button>
+        <button class="key" onclick="stage6.press('4')">4</button>
+        <button class="key" onclick="stage6.press('5')">5</button>
+        <button class="key" onclick="stage6.press('6')">6</button>
+        <button class="key" onclick="stage6.press('7')">7</button>
+        <button class="key" onclick="stage6.press('8')">8</button>
+        <button class="key" onclick="stage6.press('9')">9</button>
+        <button class="key" onclick="stage6.clearEntry()">⌫</button>
+        <button class="key" onclick="stage6.press('0')">0</button>
+        <button class="key" onclick="stage6.submit()">↵</button>
+      </div>
+
+      <div class="hint-area" id="hint6" style="display:none"></div>
+      <div class="feedback" id="keypadFeedback"></div>
+    `;
+    this.entered = '';
+  },
+
+  press(d) {
+    if (this.entered.length >= 4) return;
+    this.entered += d;
+    this.updateDisplay();
+  },
+
+  clearEntry() {
+    this.entered = this.entered.slice(0, -1);
+    this.updateDisplay();
+  },
+
+  updateDisplay() {
+    let display = this.entered.padEnd(4, '_').split('').join(' ');
+    document.getElementById('keypadDisplay').textContent = display;
+  },
+
+  submit() {
+    const fb = document.getElementById('keypadFeedback');
+    if (this.entered === this.code) {
+      fb.className = 'feedback show good';
+      fb.innerHTML = '✓ The vault unlocks with a deep, resonant tone.';
+      game.addSecret('<strong>Stage 6 cleared:</strong> Entered the final code: 5765.');
+      game.advance();
+    } else {
+      fb.className = 'feedback show bad';
+      fb.innerHTML = `✗ "${this.entered}" is not correct. The vault hums in denial.`;
+      this.entered = '';
+      this.updateDisplay();
+    }
+  },
+
+  showHint() {
+    if (this.hintsRemaining <= 0) return;
+    this.hintsRemaining--;
+    game.useHint();
+    const used = 2 - this.hintsRemaining - 1;
+    document.getElementById('hint6').style.display = 'block';
+    document.getElementById('hint6').innerHTML = `💡 <strong>Hint:</strong> ${this.hints[used]}`;
+  }
+};
+
+const STAGES = [stage1, stage2, stage3, stage4, stage5, stage6];
+
+// Boot
+window.addEventListener('DOMContentLoaded', () => game.init());
+</script>
 </body>
 </html>
