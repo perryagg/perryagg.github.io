@@ -24,7 +24,15 @@ Create 40 editable content records from the generated links:
 npm run prepare-content
 ```
 
-Edit `private/client-content.json`, then run:
+Alternatively, create an `.xlsx` workbook with a first-row header of `id`, `title`, `content` and one row for each `client-001` through `client-040`. The `content` cell may include multiple lines. Import its first worksheet with:
+
+```bash
+npm run import-excel -- --input private/clients.xlsx
+```
+
+Use `--sheet <name>` to choose another worksheet. The importer rejects missing, duplicate, or unknown client IDs so it cannot silently encrypt the wrong data.
+
+Then run:
 
 ```bash
 npm run encrypt

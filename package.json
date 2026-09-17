@@ -5,6 +5,10 @@
   "scripts": {
     "generate-links": "node scripts/generate-client-links.mjs --count 40 --base-url https://perryagg.github.io/ --output private/client-links.json",
     "prepare-content": "node scripts/create-client-content-template.mjs --keys private/client-links.json --output private/client-content.json",
+    "import-excel": "node scripts/import-client-content-from-excel.mjs",
     "encrypt": "node scripts/encrypt-client-data.mjs --input private/client-content.json --keys private/client-links.json --output data"
+  },
+  "dependencies": {
+    "exceljs": "4.4.0"
   }
 }
