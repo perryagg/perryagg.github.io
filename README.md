@@ -1,5 +1,24 @@
 # Private links for GitHub Pages
 
+## Setup
+
+Install the locked dependencies once after cloning the repository (or after removing `node_modules`):
+
+```bash
+npm ci
+```
+
+The Excel importer uses `exceljs`. It is already declared in `package.json` and locked in `package-lock.json`; `npm ci` installs it locally.
+
+## Graphical publish (Windows)
+
+After setup, double-click `Publish private data.cmd`. Select the workbook if needed, then choose one of these buttons:
+
+- `Encrypt only` updates the local encrypted files without creating a Git commit.
+- `Commit & Push` imports the workbook, encrypts the data, creates a commit, and pushes it to `origin`.
+
+The window shows progress and refuses to continue when client IDs are missing, private files would be staged, or the working tree has unrelated changes. Enable `Replace existing private content` only when the Excel workbook should replace `private/client-content.json`. The app asks for confirmation before committing and pushing.
+
 Each generated URL has this form:
 
 ```text
@@ -31,21 +50,27 @@ id          | title      | content
 client-001  | Client 001 | One multi-line text value
 ```
 
-or the table layout shown in the example image:
+Or use a table layout:
 
 ```text
-序號 | 姓名       | Any column C | Any column D
-1    | Client 001 | First value  | Second value
-2    | Client 002 | First value  | Second value
+Number | title      | Any column C | Any column D
+1      | Client 001 | First value  | Second value
+2      | Client 002 | First value  | Second value
 ```
 
-In the table layout, column A maps `1` to `client-001`, `2` to `client-002`, and so on. `姓名` is used as the page title. Every non-empty cell from `姓名` onward is captured and displayed as an individual labeled line. Empty headers are shown as `欄位 C`, `欄位 D`, and so on.
+In the table layout, column A maps `1` to `client-001`, `2` to `client-002`, and so on. A `title` or `name` column is used as the page title. Every other non-empty cell is captured and displayed as an individual labeled line. If column A contains client IDs instead of numbers, label it `id` and use IDs such as `client-001`.
+
+The repository includes sample column layouts in `examples/client-content-columns.csv` and `examples/client-table-columns.csv`. Excel can open these CSV files; save the edited workbook as `.xlsx` before importing.
 
 ```bash
-npm run import-excel -- --input private/clients.xlsx
+npm run import-excel -- --input private/data.xlsx
 ```
 
-Use `--sheet <name>` to choose another worksheet. The importer rejects missing, duplicate, or unknown client IDs so it cannot silently encrypt the wrong data.
+Use `--sheet <name>` to choose another worksheet. The importer rejects missing, duplicate, or unknown client IDs so it cannot silently encrypt the wrong data. By default it refuses to replace an existing `private/client-content.json`; when intentionally re-importing, add `--force`:
+
+```bash
+npm run import-excel -- --input private/data.xlsx --force
+```
 
 Then run:
 
