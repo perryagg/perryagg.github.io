@@ -1,0 +1,9 @@
+{
+  "clients": [
+    {
+      "id": "client-001",
+      "title": "Client 001",
+      "content": "Replace this with the private text this client should see."
+    }
+  ]
+}

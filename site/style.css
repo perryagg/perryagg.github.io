@@ -1,0 +1,6 @@
+:root { color-scheme: light dark; font-family: system-ui, sans-serif; }
+body { margin: 0; background: #f5f7fb; color: #172033; }
+main { max-width: 46rem; margin: 10vh auto; padding: 2rem; background: #fff; border-radius: 1rem; box-shadow: 0 1rem 3rem #1720331a; }
+h1 { margin-top: 0; }
+pre { white-space: pre-wrap; overflow-wrap: anywhere; font: inherit; line-height: 1.55; }
+@media (prefers-color-scheme: dark) { body { background: #101725; color: #e7edf8; } main { background: #192235; } }
