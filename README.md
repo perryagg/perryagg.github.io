@@ -30,7 +30,7 @@ Edit `private/client-content.json`, then run:
 npm run encrypt
 ```
 
-Only commit `site/` and the workflow. Do not commit `private/`, generated links, or plaintext input.
+Commit the root `index.html`, `app.js`, `style.css`, `data/`, and workflow. Do not commit `private/`, generated links, or plaintext input.
 
 ## Security boundary
 
