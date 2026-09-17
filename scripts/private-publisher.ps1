@@ -11,8 +11,8 @@ $exceljsPath = Join-Path $repoRoot "node_modules\exceljs\package.json"
 $form = New-Object System.Windows.Forms.Form
 $form.Text = "Private Data Publisher"
 $form.StartPosition = "CenterScreen"
-$form.Size = New-Object System.Drawing.Size(760, 590)
-$form.MinimumSize = New-Object System.Drawing.Size(700, 500)
+$form.Size = New-Object System.Drawing.Size(760, 700)
+$form.MinimumSize = New-Object System.Drawing.Size(700, 650)
 $form.AutoScaleMode = [System.Windows.Forms.AutoScaleMode]::Font
 
 $layout = New-Object System.Windows.Forms.TableLayoutPanel
@@ -23,7 +23,7 @@ $layout.RowCount = 9
 $layout.ColumnStyles.Add((New-Object System.Windows.Forms.ColumnStyle([System.Windows.Forms.SizeType]::Absolute, 155)))
 $layout.ColumnStyles.Add((New-Object System.Windows.Forms.ColumnStyle([System.Windows.Forms.SizeType]::Percent, 100)))
 $layout.ColumnStyles.Add((New-Object System.Windows.Forms.ColumnStyle([System.Windows.Forms.SizeType]::Absolute, 105)))
-foreach ($height in @(42, 42, 42, 38, 34, 42, 42, 34, 100)) {
+foreach ($height in @(42, 42, 42, 38, 34, 42, 180, 34, 100)) {
   $layout.RowStyles.Add((New-Object System.Windows.Forms.RowStyle([System.Windows.Forms.SizeType]::Absolute, $height)))
 }
 $form.Controls.Add($layout)
