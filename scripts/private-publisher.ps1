@@ -170,8 +170,12 @@ function Refresh-ProcessLog {
 function Complete-Process {
   Refresh-ProcessLog
   $timer.Stop()
-  $exitCode = $script:activeProcess.ExitCode
   $operation = $script:activeOperation
+  $success = if ($operation -eq "install") {
+    Test-Path -LiteralPath $exceljsPath -PathType Leaf
+  } else {
+    [regex]::IsMatch($logBox.Text, "(?m)^PUBLISHER_RESULT=success\r?$")
+  }
   $script:activeProcess.Dispose()
   $script:activeProcess = $null
   foreach ($path in @($script:standardOutputPath, $script:standardErrorPath)) {
@@ -181,7 +185,7 @@ function Complete-Process {
   $script:standardErrorPath = $null
   Set-Running $false
 
-  if ($exitCode -eq 0) {
+  if ($success) {
     $statusLabel.Text = "Complete"
     $progress.Value = 100
     if ($operation -eq "install") { Add-Log "Dependencies installed. You can now publish." }

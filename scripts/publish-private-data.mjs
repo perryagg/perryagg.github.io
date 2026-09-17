@@ -186,7 +186,11 @@ try {
 }
 }
 
-main().catch((error) => {
-  console.error(`ERROR: ${error instanceof Error ? error.message : error}`);
-  process.exitCode = 1;
-});
+main()
+  .then(() => {
+    console.log("PUBLISHER_RESULT=success");
+  })
+  .catch((error) => {
+    console.error(`ERROR: ${error instanceof Error ? error.message : error}`);
+    process.exitCode = 1;
+  });
