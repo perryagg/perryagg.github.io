@@ -17,7 +17,7 @@ After setup, double-click `Publish private data.cmd`. Select the workbook if nee
 - `Encrypt only` updates the local encrypted files without creating a Git commit.
 - `Commit & Push` imports the workbook, encrypts the data, creates a commit, and pushes it to `origin`.
 
-The window shows progress and refuses to continue when client IDs are missing, private files would be staged, or the working tree has unrelated changes. Enable `Replace existing private content` only when the Excel workbook should replace `private/client-content.json`. The app asks for confirmation before committing and pushing.
+The window shows progress and refuses to continue when client IDs are missing or a private/dependency file would be committed. It includes the project's public source files and encrypted `data/` output in the commit so a first-time publish can include the publisher itself. Enable `Replace existing private content` only when the Excel workbook should replace `private/client-content.json`. The app asks for confirmation before committing and pushing.
 
 Each generated URL has this form:
 

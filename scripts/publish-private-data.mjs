@@ -8,7 +8,20 @@ import { tmpdir } from "node:os";
 const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const importScript = resolve(repoRoot, "scripts/import-client-content-from-excel.mjs");
 const encryptScript = resolve(repoRoot, "scripts/encrypt-client-data.mjs");
-const allowedPaths = new Set(["index.html", "app.js", "style.css"]);
+const commitTargets = [
+  "index.html",
+  "app.js",
+  "style.css",
+  "data",
+  ".github",
+  "scripts",
+  "examples",
+  "README.md",
+  "package.json",
+  "package-lock.json",
+  "Publish private data.cmd",
+];
+const allowedPaths = new Set(["index.html", "app.js", "style.css", "README.md", "package.json", "package-lock.json", "Publish private data.cmd"]);
 
 function readArgs(argv) {
   const values = {};
@@ -16,7 +29,7 @@ function readArgs(argv) {
     const arg = argv[index];
     if (!arg.startsWith("--")) throw new Error(`Unexpected argument: ${arg}`);
     const name = arg.slice(2);
-    if (["force", "no-commit", "no-push", "allow-dirty", "dry-run"].includes(name)) {
+    if (["force", "no-commit", "no-push", "dry-run"].includes(name)) {
       values[name] = true;
       continue;
     }
@@ -54,7 +67,7 @@ function run(command, commandArgs, { quiet = false } = {}) {
 }
 
 function isAllowedPath(path) {
-  return allowedPaths.has(path) || path === "data" || path.startsWith("data/") || path === ".github/workflows" || path.startsWith(".github/workflows/");
+  return allowedPaths.has(path) || ["data", ".github", "scripts", "examples"].some((directory) => path === directory || path.startsWith(directory + "/"));
 }
 
 async function existing(path) {
@@ -68,8 +81,8 @@ async function existing(path) {
 }
 
 async function gitNames(cached = false) {
-  const args = cached ? ["diff", "--cached", "--name-only"] : ["status", "--porcelain", "--untracked-files=all"];
-  return (await run("git", args, { quiet: true })).stdout.trim().split(/\r?\n/).filter(Boolean);
+ const args = cached ? ["diff", "--cached", "--name-only"] : ["status", "--porcelain", "--untracked-files=all"];
+  return (await run("git", args, { quiet: true })).stdout.split(/\r?\n/).filter((line) => line.length > 0);
 }
 
 function statusPaths(statusLines) {
@@ -92,7 +105,7 @@ async function replaceGeneratedData(stagingDir, dataDir) {
 async function main() {
 const args = readArgs(process.argv.slice(2));
 if (!args.input) {
-  throw new Error("Usage: npm run publish-private -- --input <clients.xlsx> [--sheet Clients] [--force] [--message \"Update client data\"] [--no-commit] [--no-push] [--allow-dirty] [--dry-run]");
+  throw new Error("Usage: npm run publish-private -- --input <clients.xlsx> [--sheet Clients] [--force] [--message \"Update client data\"] [--no-commit] [--no-push] [--dry-run]");
 }
 
 const inputPath = resolve(args.input);
@@ -103,10 +116,11 @@ if (!(await existing(keysPath))) throw new Error(`Client key file not found: ${k
 if (await existing(contentPath) && !args.force) {
   throw new Error(`${contentPath} already exists. Check 'Replace existing private content' or pass --force.`);
 }
-if (!args["dry-run"] && !args["no-commit"]) {
+if (!args["no-commit"]) {
   const beforeStatus = statusPaths(await gitNames());
-  if (beforeStatus.length > 0 && !args["allow-dirty"]) {
-    throw new Error(`The working tree has existing changes (${beforeStatus.slice(0, 5).join(", ")}). Commit or stash them first, or pass --allow-dirty.`);
+  const unsafeChanges = beforeStatus.filter((path) => !isAllowedPath(path));
+  if (unsafeChanges.length > 0) {
+    throw new Error(`The working tree contains files this publisher will not commit: ${unsafeChanges.slice(0, 5).join(", ")}. Remove or commit them separately first.`);
   }
   const existingStaged = await gitNames(true);
   const unsafeStaged = existingStaged.filter((path) => !isAllowedPath(path));
@@ -147,7 +161,7 @@ try {
     return;
   }
 
-  await run("git", ["add", "--", "index.html", "app.js", "style.css", "data", ".github/workflows"]);
+  await run("git", ["add", "--", ...commitTargets]);
   const staged = await gitNames(true);
   const unsafeAfterAdd = staged.filter((path) => !isAllowedPath(path));
   if (unsafeAfterAdd.length > 0) throw new Error(`Refusing to commit unsafe files: ${unsafeAfterAdd.join(", ")}`);

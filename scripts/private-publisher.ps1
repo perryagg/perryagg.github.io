@@ -226,7 +226,7 @@ function Start-Workflow([bool]$commitAndPush) {
     $replaceBox.Checked = $true
   }
   if ($commitAndPush) {
-    $confirmation = [System.Windows.Forms.MessageBox]::Show($form, "This will import the workbook, encrypt all client records, create a Git commit, and push to origin. Continue?", "Confirm publish", "YesNo", "Question")
+    $confirmation = [System.Windows.Forms.MessageBox]::Show($form, "This will import the workbook, encrypt all client records, commit the public project files and encrypted data, and push to origin. Continue?", "Confirm publish", "YesNo", "Question")
     if ($confirmation -ne [System.Windows.Forms.DialogResult]::Yes) { return }
   }
 
