@@ -3,4 +3,8 @@ body { margin: 0; background: #f5f7fb; color: #172033; }
 main { max-width: 46rem; margin: 10vh auto; padding: 2rem; background: #fff; border-radius: 1rem; box-shadow: 0 1rem 3rem #1720331a; }
 h1 { margin-top: 0; }
 pre { white-space: pre-wrap; overflow-wrap: anywhere; font: inherit; line-height: 1.55; }
+.fields { display: grid; grid-template-columns: minmax(7rem, 30%) 1fr; margin: 1.5rem 0 0; border-top: 1px solid #d6dce8; }
+.fields dt, .fields dd { margin: 0; padding: .8rem 1rem; border-bottom: 1px solid #d6dce8; overflow-wrap: anywhere; white-space: pre-wrap; }
+.fields dt { font-weight: 650; background: #edf1f8; }
+@media (max-width: 34rem) { .fields { grid-template-columns: 1fr; } .fields dt { padding-bottom: .25rem; border-bottom: 0; } .fields dd { padding-top: .25rem; } }
 @media (prefers-color-scheme: dark) { body { background: #101725; color: #e7edf8; } main { background: #192235; } }

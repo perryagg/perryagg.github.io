@@ -38,6 +38,9 @@ for (const client of clients) {
   }
   if (suppliedIds.has(client.id)) throw new Error(`Duplicate client id: ${client.id}`);
   if (!keys.has(client.id)) throw new Error(`No generated key exists for ${client.id}`);
+  if (client.fields !== undefined && (!Array.isArray(client.fields) || client.fields.some((field) => !field || typeof field.label !== "string" || typeof field.value !== "string"))) {
+    throw new Error(`Fields for ${client.id} must be an array of { label, value } strings`);
+  }
   suppliedIds.add(client.id);
 }
 
@@ -58,7 +61,11 @@ for (const client of clients) {
 
   const iv = randomBytes(12);
   const aad = Buffer.from(`perryagg.github.io/client-data/v1/${client.id}`, "utf8");
-  const plaintext = Buffer.from(JSON.stringify({ title: client.title ?? "Private client data", content: client.content ?? "" }), "utf8");
+  const plaintext = Buffer.from(JSON.stringify({
+    title: client.title ?? "Private client data",
+    content: client.content ?? "",
+    fields: client.fields ?? [],
+  }), "utf8");
   const cipher = createCipheriv("aes-256-gcm", key, iv);
   cipher.setAAD(aad);
   const ciphertext = Buffer.concat([cipher.update(plaintext), cipher.final(), cipher.getAuthTag()]);

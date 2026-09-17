@@ -3,6 +3,7 @@ const status = document.querySelector("#status");
 const content = document.querySelector("#content");
 const title = document.querySelector("#title");
 const message = document.querySelector("#message");
+const fields = document.querySelector("#fields");
 
 function bytesFromBase64Url(value) {
   if (!/^[A-Za-z0-9_-]+$/.test(value)) throw new Error("Invalid private-link encoding.");
@@ -51,7 +52,20 @@ async function decryptClientData({ clientId, key: encodedKey }) {
 try {
   const data = await decryptClientData(credentials());
   title.textContent = data.title;
-  message.textContent = data.content;
+  const visibleFields = Array.isArray(data.fields)
+    ? data.fields.filter((field) => field && typeof field.label === "string" && typeof field.value === "string")
+    : [];
+  fields.replaceChildren();
+  for (const field of visibleFields) {
+    const label = document.createElement("dt");
+    label.textContent = field.label;
+    const value = document.createElement("dd");
+    value.textContent = field.value;
+    fields.append(label, value);
+  }
+  fields.hidden = visibleFields.length === 0;
+  message.textContent = typeof data.content === "string" ? data.content : "";
+  message.hidden = !message.textContent;
   content.hidden = false;
   status.hidden = true;
 } catch (error) {

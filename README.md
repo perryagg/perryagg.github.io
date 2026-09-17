@@ -24,7 +24,22 @@ Create 40 editable content records from the generated links:
 npm run prepare-content
 ```
 
-Alternatively, create an `.xlsx` workbook with a first-row header of `id`, `title`, `content` and one row for each `client-001` through `client-040`. The `content` cell may include multiple lines. Import its first worksheet with:
+Alternatively, create an `.xlsx` workbook in either supported layout and import its first worksheet with:
+
+```text
+id          | title      | content
+client-001  | Client 001 | One multi-line text value
+```
+
+or the table layout shown in the example image:
+
+```text
+序號 | 姓名       | Any column C | Any column D
+1    | Client 001 | First value  | Second value
+2    | Client 002 | First value  | Second value
+```
+
+In the table layout, column A maps `1` to `client-001`, `2` to `client-002`, and so on. `姓名` is used as the page title. Every non-empty cell from `姓名` onward is captured and displayed as an individual labeled line. Empty headers are shown as `欄位 C`, `欄位 D`, and so on.
 
 ```bash
 npm run import-excel -- --input private/clients.xlsx
