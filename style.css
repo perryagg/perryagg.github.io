@@ -7,4 +7,10 @@ pre { white-space: pre-wrap; overflow-wrap: anywhere; font: inherit; line-height
 .fields dt, .fields dd { margin: 0; padding: .8rem 1rem; border-bottom: 1px solid #d6dce8; overflow-wrap: anywhere; white-space: pre-wrap; }
 .fields dt { font-weight: 650; background: #edf1f8; }
 @media (max-width: 34rem) { .fields { grid-template-columns: 1fr; } .fields dt { padding-bottom: .25rem; border-bottom: 0; } .fields dd { padding-top: .25rem; } }
-@media (prefers-color-scheme: dark) { body { background: #101725; color: #e7edf8; } main { background: #192235; } }
+@media (prefers-color-scheme: dark) {
+  body { background: #101725; color: #e7edf8; }
+  main { background: #192235; }
+  .fields { border-color: #40506b; }
+  .fields dt, .fields dd { border-color: #40506b; }
+  .fields dt { background: #263550; color: #f4f7ff; }
+}
