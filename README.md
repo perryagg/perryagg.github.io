@@ -19,6 +19,8 @@ After setup, double-click `Publish private data.cmd`. Select the workbook if nee
 
 The window shows progress and refuses to continue when client IDs are missing or a private/dependency file would be committed. It includes the project's public source files and encrypted `data/` output in the commit so a first-time publish can include the publisher itself. Enable `Replace existing private content` only when the Excel workbook should replace `private/client-content.json`. The app asks for confirmation before committing and pushing.
 
+For the standard workbook at `private/data.xlsx`, double-click `上傳.cmd` to import it, replace existing private content, commit, and push in one step. If any step fails, the command window shows the error and stays open.
+
 Each generated URL has this form:
 
 ```text

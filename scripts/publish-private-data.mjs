@@ -20,8 +20,9 @@ const commitTargets = [
   "package.json",
   "package-lock.json",
   "Publish private data.cmd",
+  "上傳.cmd",
 ];
-const allowedPaths = new Set(["index.html", "app.js", "style.css", "README.md", "package.json", "package-lock.json", "Publish private data.cmd"]);
+const allowedPaths = new Set(["index.html", "app.js", "style.css", "README.md", "package.json", "package-lock.json", "Publish private data.cmd", "上傳.cmd"]);
 
 function readArgs(argv) {
   const values = {};
@@ -171,7 +172,7 @@ try {
   }
 
   console.log(`[4/4] Committing ${staged.length} public path(s)...`);
-  const message = args.message ?? `Update encrypted client data (${new Date().toISOString().slice(0, 10)})`;
+  const message = args.message ?? `Update client data (${new Date().toISOString().slice(0, 10)})`;
   await run("git", ["commit", "-m", message]);
   if (args["no-push"]) {
     console.log("Commit complete. Push was skipped.");

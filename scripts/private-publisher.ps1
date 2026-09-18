@@ -65,7 +65,7 @@ $layout.Controls.Add($firstSheetButton, 2, 2)
 
 $layout.Controls.Add((New-Label "Commit message"), 0, 3)
 $messageBox = New-Object System.Windows.Forms.TextBox
-$messageBox.Text = "Update encrypted client data"
+$messageBox.Text = "Update client data"
 $messageBox.Dock = [System.Windows.Forms.DockStyle]::Fill
 $layout.Controls.Add($messageBox, 1, 3)
 $layout.SetColumnSpan($messageBox, 2)
