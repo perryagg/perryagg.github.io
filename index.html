@@ -1,22 +1,86 @@
 <!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="referrer" content="no-referrer">
-    <title>Private client page</title>
-    <link rel="stylesheet" href="style.css">
-  </head>
-  <body>
-    <main>
-      <h1>Private client page</h1>
-      <p id="status" role="status">Opening your private link…</p>
-      <section id="content" hidden>
-        <h2 id="title"></h2>
-        <dl id="fields" class="fields" hidden></dl>
-        <pre id="message"></pre>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101820">
+  <meta name="description" content="一款約 20 分鐘的校園懸疑密室逃脫網頁遊戲。調查四個場景，拼湊失蹤之夜的真相。">
+  <title>第七節之後｜校園懸疑密室逃脫</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <div class="noise" aria-hidden="true"></div>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="brand"><span class="brand-mark">07<span class="brand-dot">.</span></span><span><b>第七節之後</b><small>AFTER THE LAST BELL</small></span></div>
+      <div class="topbar-right"><span class="case-id">案件編號 / 11—07</span><span class="time-chip"><span class="pulse"></span>已調查 <strong id="timer">00:00</strong></span><button class="icon-button" id="restart-button" type="button" title="重新開始" aria-label="重新開始">↺</button></div>
+    </header>
+
+    <main class="layout">
+      <aside class="case-panel" aria-label="案件資料與筆記">
+        <div class="panel-eyebrow">CASE FILE <span>01 / 未結案</span></div>
+        <div class="case-title"><span class="case-vertical">失蹤檔案</span><h1>林澄<br>去哪了<span>？</span></h1></div>
+        <p class="case-summary">十一月七日，晚自習結束後，二年三班的林澄從校內消失。你收到一封沒有署名的信，約你在封校前找到她留下的證據。</p>
+        <div class="case-divider"></div>
+        <div class="section-heading"><span>調查進度</span><span id="progress-text">0 / 4</span></div>
+        <div class="progress-track"><div id="progress-fill"></div></div>
+        <nav class="room-nav" id="room-nav" aria-label="場景切換"></nav>
+        <div class="case-divider"></div>
+        <div class="section-heading notes-heading"><span>調查筆記</span><span id="clue-count">0 條</span></div>
+        <button id="notes-toggle" class="notes-toggle" type="button" aria-expanded="false">查看調查筆記 <span>＋</span></button>
+        <div id="clue-list" class="clue-list"><p class="empty-note">點選場景中的物件，線索會記在這裡。</p></div>
+      </aside>
+
+      <section class="play-area" aria-label="遊戲場景">
+        <div class="scene-heading"><div><span class="eyebrow" id="chapter-label">CHAPTER 01 — THE CORRIDOR</span><h2 id="room-title">夜間走廊</h2><p id="room-subtitle">最後一聲鐘響之後，整棟教學樓忽然安靜了。</p></div><span class="scene-count" id="scene-count">01 / 04</span></div>
+        <div class="scene" id="scene">
+          <div class="scene-grain" aria-hidden="true"></div>
+          <div id="scene-art" class="scene-art" aria-hidden="true"></div>
+          <span class="scene-coordinate" id="scene-coordinate">B棟・三樓走廊</span>
+          <div id="hotspots" class="hotspots"></div>
+          <span class="scene-corner scene-corner-tl"></span><span class="scene-corner scene-corner-tr"></span><span class="scene-corner scene-corner-bl"></span><span class="scene-corner scene-corner-br"></span>
+        </div>
+        <div class="scene-footer"><span><i class="small-diamond"></i> 點選發光標記調查物件</span><span id="scene-footer-right">已發現 0 / 3 件</span></div>
+        <div class="mobile-object-list" id="mobile-object-list" aria-label="可調查物件"></div>
       </section>
+
+      <aside class="action-panel" aria-label="當前任務與解謎">
+        <div class="action-head"><span class="eyebrow">CURRENT OBJECTIVE</span><div class="signal-bars"><i></i><i></i><i></i><i></i></div></div>
+        <div class="objective-number" id="objective-number">01<span>/04</span></div>
+        <h3 id="objective-title">打開置物櫃</h3>
+        <p id="objective-description">尋找走廊裡與「最後一節」有關的線索。</p>
+        <div class="action-rule"></div>
+        <div class="puzzle-label"><span>密碼鎖</span><span id="puzzle-status">LOCKED</span></div>
+        <p class="puzzle-prompt" id="puzzle-prompt">輸入四位數密碼</p>
+        <form id="code-form" class="code-form" autocomplete="off"><label class="sr-only" for="code-input">四位數密碼</label><input id="code-input" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" placeholder="_ _ _ _" aria-describedby="code-message" required><button id="submit-code" type="submit">解鎖 <span>→</span></button></form>
+        <p id="code-message" class="code-message" role="status" aria-live="polite">仔細閱讀找到的線索。</p>
+        <div class="action-rule"></div>
+        <button class="hint-button" id="hint-button" type="button"><span class="hint-icon">✦</span><span>需要一點提示？</span><span class="hint-arrow">↗</span></button>
+        <div id="hint-content" class="hint-content" aria-live="polite"></div>
+        <div class="action-bottom"><span>建議遊玩時間</span><strong>約 20 分鐘</strong><span>進度會自動儲存在此瀏覽器</span></div>
+      </aside>
     </main>
-    <script type="module" src="app.js"></script>
-  </body>
+    <footer class="app-footer"><span>南川中學 · 1998—2024</span><span>THE TRUTH IS SOMEWHERE IN THE SILENCE</span></footer>
+  </div>
+
+  <div id="modal" class="modal-backdrop hidden" role="presentation">
+    <section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <button id="modal-close" class="modal-close" type="button" aria-label="關閉">×</button>
+      <span id="modal-eyebrow" class="eyebrow">EVIDENCE</span>
+      <div id="modal-icon" class="modal-icon" aria-hidden="true"></div>
+      <h2 id="modal-title"></h2>
+      <div id="modal-body" class="modal-body"></div>
+      <div id="modal-tag" class="modal-tag"></div>
+      <button id="modal-action" class="modal-action" type="button">繼續調查 <span>→</span></button>
+    </section>
+  </div>
+
+  <div id="intro" class="intro-overlay">
+    <div class="intro-inner"><span class="intro-index">NC HIGH SCHOOL / CASE 11—07</span><div class="intro-rule"></div><span class="intro-overline">一封匿名信。四個房間。一個被藏起來的真相。</span><h2>第七節<span>之後</span></h2><p>「如果你讀到這封信，代表我還沒有回家。<br>別相信公告。從三樓走廊開始找。」<br><span>— 林澄留下的最後一句話</span></p><button id="start-button" type="button">進入校舍 <span>↗</span></button><small>點選物件尋找線索 · 輸入密碼推進劇情 · 約 20 分鐘</small></div>
+    <div class="intro-decoration" aria-hidden="true">07</div>
+  </div>
+
+  <div id="ending" class="ending-overlay hidden"><div class="ending-inner"><span class="eyebrow">CASE FILE / CLOSED</span><div class="ending-symbol">✳</div><h2>真相，終於有了聲音。</h2><p id="ending-story"></p><div class="ending-stats"><span>發現線索 <strong id="ending-clues"></strong></span><span>調查時間 <strong id="ending-time"></strong></span><span>使用提示 <strong id="ending-hints"></strong></span></div><button id="ending-restart" type="button">重新調查 ↗</button></div></div>
+</body>
 </html>
