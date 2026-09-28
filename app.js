@@ -65,7 +65,7 @@ const rooms = [
   }
 ];
 
-const defaultState = () => ({started:false, complete:false, room:0, unlocked:0, seen:[], seconds:0, hints:[0,0,0,0], finalUnlocked:false, evidenceSolved:false, evidenceChoices:{departure:'',camera:'',record:''}});
+const defaultState = () => ({started:false, complete:false, room:0, unlocked:0, seen:[], seconds:0, hints:[0,0,0,0], finalUnlocked:false, evidenceSolved:false, evidenceChoices:{departure:'',camera:'',record:''}, highlightHints:false});
 let state = defaultState();
 try { const saved = JSON.parse(localStorage.getItem(STORAGE_KEY)); if (saved && typeof saved === 'object') state = {...state,...saved}; } catch (_) {}
 state.room = Math.min(Math.max(Number(state.room)||0,0),3);
@@ -75,6 +75,7 @@ state.seen = Array.isArray(state.seen) ? state.seen : [];
 state.hints = Array.isArray(state.hints) && state.hints.length===4 ? state.hints : [0,0,0,0];
 state.evidenceSolved = Boolean(state.evidenceSolved);
 state.evidenceChoices = {...defaultState().evidenceChoices,...(state.evidenceChoices && typeof state.evidenceChoices==='object' ? state.evidenceChoices : {})};
+state.highlightHints = Boolean(state.highlightHints);
 
 const $ = id => document.getElementById(id);
 const save = () => { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (_) {} };
@@ -82,6 +83,13 @@ const pad = n => String(n).padStart(2,'0');
 const timeText = () => `${pad(Math.floor(state.seconds/60))}:${pad(state.seconds%60)}`;
 const seenKey = (room,id) => `${room}:${id}`;
 let returnFocus = null;
+
+function updateHighlightSetting() {
+  document.body.classList.toggle('highlight-hints',state.highlightHints);
+  $('highlight-toggle').setAttribute('aria-pressed',String(state.highlightHints));
+  $('highlight-toggle').setAttribute('aria-label',`黃字提示：${state.highlightHints?'開啟':'關閉'}`);
+  $('highlight-status').textContent=state.highlightHints?'開':'關';
+}
 
 function roomArt(index) {
   const base = `<svg viewBox="0 0 900 620" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="wall" x2="0" y2="1"><stop stop-color="#354d55"/><stop offset="1" stop-color="#1b2a33"/></linearGradient><linearGradient id="floor" x2="0" y2="1"><stop stop-color="#3c4a47"/><stop offset="1" stop-color="#111b23"/></linearGradient><radialGradient id="light"><stop stop-color="#d5b77b" stop-opacity=".45"/><stop offset="1" stop-color="#c4a269" stop-opacity="0"/></radialGradient><linearGradient id="glass" x2="0" y2="1"><stop stop-color="#62777b"/><stop offset="1" stop-color="#1a2c35"/></linearGradient><filter id="blur"><feGaussianBlur stdDeviation="20"/></filter></defs>`;
@@ -96,6 +104,7 @@ function roomArt(index) {
 function render() {
   const room = rooms[state.room];
   const solved = state.room < state.unlocked || (state.room===3 && state.finalUnlocked);
+  updateHighlightSetting();
   $('timer').textContent = timeText();
   $('chapter-label').textContent = `CHAPTER ${pad(state.room+1)} — ${room.english}`;
   $('room-title').textContent = room.name;
@@ -236,6 +245,7 @@ $('hint-button').addEventListener('click',()=>{
   $('hint-button').querySelector('span:nth-child(2)').textContent=state.hints[i]<3?'再給我一點提示':'已顯示完整提示';
 });
 $('modal-close').addEventListener('click',closeModal);
+$('highlight-toggle').addEventListener('click',()=>{state.highlightHints=!state.highlightHints;save();updateHighlightSetting();});
 $('modal-action').addEventListener('click',closeModal);
 $('modal').addEventListener('click',event=>{if(event.target===$('modal')) closeModal();});
 document.addEventListener('keydown',event=>{if(event.key==='Escape'&&!$('modal').classList.contains('hidden')) closeModal();});
