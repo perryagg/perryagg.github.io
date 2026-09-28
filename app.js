@@ -3,59 +3,69 @@ const STORAGE_KEY = 'after-last-bell-save-v1';
 const rooms = [
   {
     name: '夜間走廊', english: 'THE CORRIDOR', location: 'B棟・三樓走廊', subtitle: '最後一聲鐘響之後，整棟教學樓忽然安靜了。',
-    objective: '打開置物櫃', description: '尋找走廊裡與「最後一節」有關的線索。', prompt: '四位數置物櫃密碼', code: '5112',
-    hints: ['先調查晚自習時刻表和匿名便條。', '時刻表的最後一個時間是 21:15。便條要你把數字倒過來。', '把 2115 反向排列，輸入 5112。'],
+    objective: '打開置物櫃', description: '辨認「最後一節」的時間，再解讀窗上的鏡像提示。', prompt: '四位數置物櫃密碼', code: '5112',
+    hints: ['巡查表與課表都有時間；匿名便條指定的是「最後一節」。', '最後一節結束於 21:15。窗玻璃上的箭頭表示要把四個數字逐位倒讀。', '去掉冒號後是 2115；從右往左讀為 5112。'],
     objects: [
       {id:'clock', name:'停住的時鐘', icon:'◷', x:52, y:17, note:'時鐘停在 21:15。', body:'指針卡在 <strong>21:15</strong>。鐘面邊緣有一道細長刮痕，像是有人刻意把它停在這一刻。'},
       {id:'schedule', name:'晚自習時刻表', icon:'▤', x:23, y:49, note:'最後一節晚自習結束於 21:15。', body:'褪色的時刻表仍貼在牆上。<div class="evidence-grid"><span>第一節 <em>18:30</em></span><span>第二節 <em>19:45</em></span><span>第三節 <em>20:30</em></span><span>最後一節 <em>21:15</em></span></div>「最後一節」被紅筆圈了起來。'},
-      {id:'note', name:'匿名便條', icon:'✉', x:76, y:41, note:'置物櫃密碼是「最後一節的時間倒過來」。', body:'紙條被壓在布告欄角落。<blockquote>「不要相信從正面看到的。<br>置物櫃密碼，是<strong>最後一節的時間倒過來</strong>。」</blockquote>字跡與你收到的匿名信相同。'},
+      {id:'note', name:'匿名便條', icon:'✉', x:77, y:40, note:'置物櫃密碼與「最後一節」及走廊窗子的倒影有關。', body:'紙條被壓在布告欄角落。<blockquote>「兩個時間都是真的，只有一個屬於最後一節。把它交給窗子的倒影；<strong>不要只交換時與分</strong>。」</blockquote>字跡與你收到的匿名信相同。'},
+      {id:'window', name:'走廊窗玻璃', icon:'◇', x:12, y:29, note:'窗上刻著「四個數字，從右往左逐位讀」。', body:'手指抹去玻璃上的灰塵，露出一道朝左的箭頭。箭頭下方有小字：<blockquote>「時鐘上的四個數字，<strong>從右往左逐位讀</strong>。」</blockquote>它提醒你不能只把「21」和「15」交換位置。'},
+      {id:'patrol', name:'夜間巡查表', icon:'⌁', x:23, y:76, note:'保全在 21:10 巡查走廊；這不是最後一節的下課時間。', body:'巡查表記著保全於 <strong>21:10</strong> 經過三樓。這個時間和時鐘很接近，但它只是巡查時間。'},
+      {id:'announcement', name:'失蹤公告', icon:'▧', x:49, y:61, note:'校方聲稱林澄在 21:15 已離校。', body:'公告寫著：「林澄於 <strong>21:15</strong> 晚自習結束後自行離校。」右下角蓋有教務處的章；墨水還很新。'},
       {id:'locker', name:'林澄的置物櫃', icon:'▣', x:71, y:77, note:'置物櫃上有四位數密碼鎖。', body:'櫃門貼著褪色的姓名標籤「林澄」。四位數鎖仍鎖著；輸入密碼的鍵盤就在右側。'}
     ],
     reward:{name:'置物櫃裡的鑰匙', icon:'⚿', note:'取得二年三班教室鑰匙；林澄留下「她在座位間走了一條路」的提示。', body:'櫃中只有一把教室鑰匙和半張筆記。<blockquote>「別看我的座位。看看我那晚<strong>走過的路</strong>。」</blockquote>你用鑰匙打開二年三班。'}
   },
   {
     name:'二年三班', english:'THE CLASSROOM', location:'B棟・二年三班', subtitle:'空教室裡，四張桌子的位置被粉筆重新標記。',
-    objective:'打開教師抽屜', description:'找出林澄當晚走過的路，將座位數字依序排列。', prompt:'四位數教師抽屜密碼', code:'2749',
-    hints:['半張筆記提到「走過的路」。黑板上畫了方向。', '黑板的順序是窗邊 → 走道 → 講台 → 門邊。對照座位圖上的數字。', '依序取得 2、7、4、9，輸入 2749。'],
+    objective:'打開教師抽屜', description:'還原林澄離開教室的路線，別把她的座號當成密碼。', prompt:'四位數教師抽屜密碼', code:'3816',
+    hints:['置物櫃筆記說要看「走過的路」，不是林澄的座號。', '黑板畫出窗邊 → 空白 → 講台 → 門邊；鞋印顯示空白處是走道。', '對照座位圖，窗邊 3、走道 8、講台 1、門邊 6，輸入 3816。'],
     objects:[
-      {id:'board',name:'黑板上的路線',icon:'↗',x:54,y:26,note:'路線依序是窗邊 → 走道 → 講台 → 門邊。',body:'值日生擦掉了大半個黑板，只剩一條新畫的箭頭。<blockquote>窗邊 → 走道 → 講台 → 門邊</blockquote>旁邊有一行小字：「按我走過的順序。」'},
-      {id:'seats',name:'座位配置圖',icon:'▦',x:25,y:58,note:'窗邊 2；走道 7；講台 4；門邊 9。',body:'講桌上放著新的座位配置圖。四個位置被圈起來：<div class="evidence-grid"><span>窗邊 <em>2</em></span><span>走道 <em>7</em></span><span>講台 <em>4</em></span><span>門邊 <em>9</em></span></div>圈痕的粉筆顏色和黑板上的箭頭一樣。'},
+      {id:'board',name:'黑板上的路線',icon:'↗',x:54,y:26,note:'黑板路線是窗邊 → 被擦掉的位置 → 講台 → 門邊。',body:'值日生擦掉了大半個黑板，只剩一條新畫的箭頭。<blockquote>窗邊 → 〔被擦掉〕 → 講台 → 門邊</blockquote>旁邊有一行小字：「按我走過的順序。」'},
+      {id:'seats',name:'座位配置圖',icon:'▦',x:25,y:58,note:'窗邊 3；走道 8；講台 1；門邊 6。',body:'講桌上放著新的座位配置圖。四個位置被圈起來：<div class="evidence-grid"><span>窗邊 <em>3</em></span><span>走道 <em>8</em></span><span>講台 <em>1</em></span><span>門邊 <em>6</em></span></div>圈痕的粉筆顏色和黑板上的箭頭一樣。'},
       {id:'diary',name:'林澄的日記',icon:'≡',x:74,y:66,note:'林澄發現有人偷改考卷與轉學資料。',body:'日記最後一頁被撕去一半。<blockquote>「我拍到了教務處改動試題的紀錄。主任說，只要我閉嘴，就能當作什麼都沒發生。現在連我的學籍也可能被動手腳。」</blockquote>後面只有日期：十一月七日。'},
+      {id:'footprints',name:'粉筆鞋印',icon:'⌁',x:46,y:55,note:'鞋印從窗邊穿過走道，再延伸向講台。',body:'地上有一串沾著白色粉筆灰的鞋印。它從窗邊桌子出發，<strong>穿過走道</strong>，接著朝講台延伸。這正好補上黑板被擦掉的那一段。'},
+      {id:'attendance',name:'點名簿',icon:'▧',x:18,y:78,note:'林澄的座號是 5；置物櫃筆記提醒不要看她的座位。',body:'點名簿記著「林澄：<strong>5 號</strong>」。你想起置物櫃裡的半張筆記：<blockquote>「別看我的座位。看看我那晚走過的路。」</blockquote>座號顯然不是抽屜密碼的一部分。'},
       {id:'drawer',name:'教師抽屜',icon:'▤',x:49,y:76,note:'教師抽屜上有四位數密碼鎖。',body:'抽屜的鎖是新換的。鎖旁黏著一點白粉筆屑，像有人匆忙把它關上。'}
     ],
     reward:{name:'可疑的轉學文件',icon:'▧',note:'林澄的「自願轉學」文件在 21:30 簽核，晚於失蹤時間。背面夾著圖書室鑰匙。',body:'抽屜裡是一份「自願轉學申請」。簽核時間印著 <strong>11 月 7 日 21:30</strong>，簽名欄是教務主任<strong>沈國維</strong>。可是校方公告說林澄在 21:15 就已經離校。文件背面還夾著圖書室鑰匙。'}
   },
   {
-    name:'舊圖書室', english:'THE LIBRARY', location:'A棟・舊圖書室', subtitle:'借閱紀錄被抽走了，四本書卻被刻意留在桌上。',
-    objective:'解開檔案櫃', description:'找出四本書的年代與編號，依館員留下的規則排列。', prompt:'四位數檔案櫃密碼', code:'6382',
-    hints:['查看桌上的四本書，再看書架旁的館員備忘錄。', '備忘錄說以出版年份由舊到新排列，取書脊末位數。', '1998、2003、2010、2021 的末位數是 6、3、8、2。'],
+    name:'舊圖書室', english:'THE LIBRARY', location:'A棟・舊圖書室', subtitle:'六本書散在桌上；借閱簿只留下林澄取走的四個書名。',
+    objective:'解開檔案櫃', description:'先從六本書中找出林澄借過的四本，再依館員規則排序。', prompt:'四位數檔案櫃密碼', code:'4726',
+    hints:['借閱簿能幫你排除兩本無關的書；館員備忘錄決定四本書的讀取順序。', '只取《冬季天文》《暗房手冊》《校園年鑑》《聲音檔案》，按出版年份由舊到新排列。', '1998、2003、2010、2021 的書脊末位依序是 4、7、2、6。'],
     objects:[
-      {id:'catalog',name:'館員備忘錄',icon:'✎',x:52,y:24,note:'檔案櫃密碼：依出版年份由舊到新，取書脊末位數。',body:'備忘錄夾在借閱卡盒中。<blockquote>「檔案櫃的四位密碼，照桌上四本書的<strong>出版年份由舊到新</strong>排好，再讀出書脊標籤的末位數。」</blockquote>'},
-      {id:'book1',name:'《冬季天文》',icon:'Ⅰ',x:17,y:53,note:'《冬季天文》出版於 1998 年，書脊標籤末位 6。',body:'扉頁寫著出版年份 <strong>1998</strong>。書脊的館藏標籤是 A-146，最後一位是 <strong>6</strong>。'},
-      {id:'book2',name:'《暗房手冊》',icon:'Ⅱ',x:39,y:64,note:'《暗房手冊》出版於 2003 年，書脊標籤末位 3。',body:'扉頁寫著出版年份 <strong>2003</strong>。書脊的館藏標籤是 P-203，最後一位是 <strong>3</strong>。'},
-      {id:'book3',name:'《校園年鑑》',icon:'Ⅲ',x:63,y:56,note:'《校園年鑑》出版於 2010 年，書脊標籤末位 8。',body:'扉頁寫著出版年份 <strong>2010</strong>。書脊的館藏標籤是 H-318，最後一位是 <strong>8</strong>。'},
-      {id:'book4',name:'《聲音檔案》',icon:'Ⅳ',x:82,y:69,note:'《聲音檔案》出版於 2021 年，書脊標籤末位 2。',body:'扉頁寫著出版年份 <strong>2021</strong>。書脊的館藏標籤是 S-422，最後一位是 <strong>2</strong>。'},
+      {id:'catalog',name:'館員備忘錄',icon:'✎',x:52,y:24,note:'只取林澄借過的書；依出版年份由舊到新讀取書脊末位數。',body:'備忘錄夾在借閱卡盒中。<blockquote>「桌上有兩本書只是館員昨天歸還的。<strong>只取林澄借過的四本</strong>，依出版年份由舊到新排列，讀出書脊標籤的末位數。」</blockquote>'},
+      {id:'borrow',name:'殘缺借閱簿',icon:'▥',x:30,y:33,note:'林澄借閱：《冬季天文》《暗房手冊》《校園年鑑》《聲音檔案》。',body:'十一月七日的借閱頁被撕掉一角，但林澄簽名旁的四個書名還在：<blockquote>《聲音檔案》／《冬季天文》<br>《校園年鑑》／《暗房手冊》</blockquote>登記順序顯然不是館員備忘錄要求的排序。'},
+      {id:'book1',name:'《冬季天文》',icon:'Ⅰ',x:17,y:53,note:'《冬季天文》出版於 1998 年，書脊標籤末位 4。',body:'扉頁寫著出版年份 <strong>1998</strong>。書脊的館藏標籤是 A-144，最後一位是 <strong>4</strong>。'},
+      {id:'book2',name:'《暗房手冊》',icon:'Ⅱ',x:39,y:64,note:'《暗房手冊》出版於 2003 年，書脊標籤末位 7。',body:'扉頁寫著出版年份 <strong>2003</strong>。書脊的館藏標籤是 P-207，最後一位是 <strong>7</strong>。'},
+      {id:'book3',name:'《校園年鑑》',icon:'Ⅲ',x:63,y:56,note:'《校園年鑑》出版於 2010 年，書脊標籤末位 2。',body:'扉頁寫著出版年份 <strong>2010</strong>。書脊的館藏標籤是 H-312，最後一位是 <strong>2</strong>。'},
+      {id:'book4',name:'《聲音檔案》',icon:'Ⅳ',x:82,y:69,note:'《聲音檔案》出版於 2021 年，書脊標籤末位 6。',body:'扉頁寫著出版年份 <strong>2021</strong>。書脊的館藏標籤是 S-426，最後一位是 <strong>6</strong>。'},
+      {id:'book5',name:'《雨天植物》',icon:'Ⅴ',x:33,y:82,note:'《雨天植物》出版於 2001 年、標籤末位 5，但不在林澄的借閱清單。',body:'扉頁寫著出版年份 <strong>2001</strong>；書脊標籤 B-175，末位是 <strong>5</strong>。封底貼著「昨日歸還」標記，借閱簿沒有這本書。'},
+      {id:'book6',name:'《海岸地圖》',icon:'Ⅵ',x:68,y:83,note:'《海岸地圖》出版於 2018 年、標籤末位 9，但不在林澄的借閱清單。',body:'扉頁寫著出版年份 <strong>2018</strong>；書脊標籤 G-409，末位是 <strong>9</strong>。封底也貼著「昨日歸還」標記。'},
       {id:'cabinet',name:'上鎖的檔案櫃',icon:'▣',x:86,y:31,note:'檔案櫃需要四位數密碼。',body:'檔案櫃有一道新安裝的密碼鎖。櫃門縫裡露出半張監視器維護單。'}
     ],
     reward:{name:'監視器維護紀錄',icon:'▥',note:'21:22，編號 001 的管理員識別證關閉監視器；這張證件屬於沈國維。取得廣播室通行證。',body:'檔案櫃中的維護單記錄：<strong>21:22，管理員識別證 001 手動關閉 B 棟監視器</strong>。識別證名冊顯示 001 屬於教務主任沈國維。同一個信封裡有廣播室通行證。'}
   },
   {
-    name:'廣播室', english:'THE BROADCAST ROOM', location:'主棟・廣播室', subtitle:'最後一段錄音被鎖在播音台裡，四份紀錄散落四處。',
-    objective:'啟動播音台', description:'把四份帶有編號的紀錄按時間先後排列。', prompt:'四位數播音台密碼', code:'1734',
-    hints:['牆上的操作須知說，要按時間先後輸入四份紀錄的末碼。', '四個時間分別是 21:22、21:30、21:47、22:05。', '依時間排序，末碼依序為 1、7、3、4。'],
+    name:'廣播室', english:'THE BROADCAST ROOM', location:'主棟・廣播室', subtitle:'最後一段錄音被鎖在播音台裡，六份紀錄散落四處。',
+    objective:'啟動播音台', description:'在六份紀錄中找出四份有星記的檔案，按時間重建當晚事件。', prompt:'四位數播音台密碼', code:'2584',
+    hints:['操作須知指定「有星記」的紀錄；巡邏與體育館紀錄沒有星記。', '四個相關時間依序是 21:22、21:30、21:47、22:05。', '把四份星記紀錄按時間排序，末碼是 2、5、8、4。'],
     objects:[
-      {id:'manual',name:'操作須知',icon:'?',x:20,y:27,note:'播音台密碼：按時間先後排列四份紀錄的末碼。',body:'操作須知的最後一頁被人重新貼上。<blockquote>「四份紀錄各有一個末碼。<strong>照發生時間由早到晚</strong>輸入，才能播放最後的檔案。」</blockquote>'},
-      {id:'security',name:'保全紀錄',icon:'◫',x:72,y:28,note:'21:22 監視器中斷，紀錄末碼 1。',body:'保全紀錄：<strong>21:22</strong>，B 棟攝影機失去訊號。事件編號 SEC-<strong>1</strong>。'},
-      {id:'transfer',name:'文件列印單',icon:'▥',x:36,y:67,note:'21:30 轉學文件列印，紀錄末碼 7。',body:'印表機留下的工作單：<strong>21:30</strong>，列印「林澄轉學申請」。工作編號 DOC-<strong>7</strong>。'},
-      {id:'audio',name:'錄音排程',icon:'♫',x:57,y:50,note:'21:47 有一段錄音寫入，紀錄末碼 3。',body:'自動錄音排程：<strong>21:47</strong>，來源「廣播室麥克風」，檔案編號 AUD-<strong>3</strong>。檔案內容仍被播音台鎖住。'},
-      {id:'gate',name:'側門出入簿',icon:'↗',x:82,y:71,note:'22:05 側門開啟，紀錄末碼 4。',body:'側門出入簿：<strong>22:05</strong>，緊急出口被開啟。事件編號 GATE-<strong>4</strong>。紀錄旁有一個小小的「澄」字。'},
+      {id:'manual',name:'操作須知',icon:'?',x:20,y:27,note:'只取有星記的四份紀錄，依時間先後排列末碼。',body:'操作須知的最後一頁被人重新貼上。<blockquote>「當晚紀錄很多。只取紙角有<strong>星記 ✦</strong> 的四份，照發生時間由早到晚排列末碼，才能播放最後的檔案。」</blockquote>'},
+      {id:'security',name:'保全紀錄',icon:'◫',x:72,y:28,note:'✦ 21:22 B 棟監視器中斷；紀錄末碼 2。',body:'紙角有星記 ✦。保全紀錄：<strong>21:22</strong>，B 棟攝影機失去訊號。事件編號 SEC-<strong>2</strong>。'},
+      {id:'transfer',name:'文件列印單',icon:'▥',x:36,y:67,note:'✦ 21:30 林澄轉學文件列印；紀錄末碼 5。',body:'紙角有星記 ✦。印表機工作單：<strong>21:30</strong>，列印「林澄轉學申請」。工作編號 DOC-<strong>5</strong>。'},
+      {id:'audio',name:'錄音排程',icon:'♫',x:57,y:50,note:'✦ 21:47 廣播室錄音寫入；紀錄末碼 8。',body:'紙角有星記 ✦。自動錄音排程：<strong>21:47</strong>，來源「廣播室麥克風」，檔案編號 AUD-<strong>8</strong>。檔案內容仍被播音台鎖住。'},
+      {id:'gate',name:'側門出入簿',icon:'↗',x:82,y:71,note:'✦ 22:05 側門開啟；紀錄末碼 4。',body:'紙角有星記 ✦。側門出入簿：<strong>22:05</strong>，緊急出口被開啟。事件編號 GATE-<strong>4</strong>。紀錄旁有一個小小的「澄」字。'},
+      {id:'patrol2',name:'主棟巡邏簿',icon:'⌁',x:14,y:52,note:'21:18 主棟巡邏，紀錄末碼 9；紙角沒有星記。',body:'主棟巡邏簿：<strong>21:18</strong>，巡邏員經過樓梯。事件編號 WALK-<strong>9</strong>。紙角沒有星記，與林澄的路線無關。'},
+      {id:'gym',name:'體育館音響單',icon:'▧',x:73,y:85,note:'21:40 體育館音響測試，紀錄末碼 6；紙角沒有星記。',body:'體育館音響測試：<strong>21:40</strong>，例行測試廣播線路。工作編號 GYM-<strong>6</strong>。紙角沒有星記。'},
       {id:'console',name:'播音控制台',icon:'▣',x:24,y:78,note:'播音控制台需要四位數密碼。',body:'播音台的燈亮著，顯示「最後檔案：待解鎖」。麥克風旁放著林澄的學生證。'}
     ],
-    reward:{name:'林澄留下的錄音',icon:'♫',note:'林澄親口證實，她因掌握試題交易證據而躲藏，22:05 已從側門離開。',body:'喇叭傳出林澄刻意壓低的聲音。<blockquote>「沈主任把試題賣給補習班。我拿到了交易紀錄。他關掉監視器時，我躲進廣播室錄下這段話。<strong>我沒有失蹤，22:05 會從側門離開</strong>，把證據交給可信任的人。如果你聽見這段錄音，請替我把真相說出來。」</blockquote>現在，你必須指出是誰利用權限掩蓋此事。'}
+    reward:{name:'林澄留下的錄音',icon:'♫',note:'林澄親口證實，她因掌握試題交易證據而躲藏，22:05 已從側門離開。',body:'喇叭傳出林澄刻意壓低的聲音。<blockquote>「我拿到了教務處賣試題給補習班的交易紀錄。監視器突然關掉時，我躲進廣播室錄下這段話。<strong>我沒有失蹤，22:05 會從側門離開</strong>，把證據交給可信任的人。如果你聽見這段錄音，請替我把真相說出來。」</blockquote>現在，先把三條證據串起來，再指出是誰利用權限掩蓋此事。'}
   }
 ];
 
-const defaultState = () => ({started:false, complete:false, room:0, unlocked:0, seen:[], seconds:0, hints:[0,0,0,0], finalUnlocked:false});
+const defaultState = () => ({started:false, complete:false, room:0, unlocked:0, seen:[], seconds:0, hints:[0,0,0,0], finalUnlocked:false, evidenceSolved:false, evidenceChoices:{departure:'',camera:'',record:''}});
 let state = defaultState();
 try { const saved = JSON.parse(localStorage.getItem(STORAGE_KEY)); if (saved && typeof saved === 'object') state = {...state,...saved}; } catch (_) {}
 state.room = Math.min(Math.max(Number(state.room)||0,0),3);
@@ -63,6 +73,8 @@ state.unlocked = Math.min(Math.max(Number(state.unlocked)||0,0),3);
 state.room = Math.min(state.room,state.unlocked);
 state.seen = Array.isArray(state.seen) ? state.seen : [];
 state.hints = Array.isArray(state.hints) && state.hints.length===4 ? state.hints : [0,0,0,0];
+state.evidenceSolved = Boolean(state.evidenceSolved);
+state.evidenceChoices = {...defaultState().evidenceChoices,...(state.evidenceChoices && typeof state.evidenceChoices==='object' ? state.evidenceChoices : {})};
 
 const $ = id => document.getElementById(id);
 const save = () => { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (_) {} };
@@ -92,14 +104,14 @@ function render() {
   $('scene-coordinate').textContent = room.location;
   $('scene-art').innerHTML = roomArt(state.room);
   $('objective-number').innerHTML = `${pad(state.room+1)}<span>/04</span>`;
-  $('objective-title').textContent = state.finalUnlocked && state.room===3 ? '指出真相' : solved ? '已取得關鍵線索' : room.objective;
-  $('objective-description').textContent = state.finalUnlocked && state.room===3 ? '根據取得的錄音和文件，判斷誰掩蓋了林澄掌握的證據。' : solved ? '這個房間已解鎖。你仍可回來查看尚未發現的物件。' : room.description;
-  $('puzzle-prompt').textContent = state.finalUnlocked && state.room===3 ? '誰利用權限掩蓋試題交易？' : solved ? '密碼已解開' : room.prompt;
+  $('objective-title').textContent = state.finalUnlocked && state.room===3 ? state.evidenceSolved ? '指出真相' : '重建證據鏈' : solved ? '已取得關鍵線索' : room.objective;
+  $('objective-description').textContent = state.finalUnlocked && state.room===3 ? state.evidenceSolved ? '三條證據已吻合。根據錄音和文件，判斷誰掩蓋了真相。' : '從四個房間的筆記中，選出能證明三個關鍵事實的線索。' : solved ? '這個房間已解鎖。你仍可回來查看尚未發現的物件。' : room.description;
+  $('puzzle-prompt').textContent = state.finalUnlocked && state.room===3 ? state.evidenceSolved ? '誰利用權限掩蓋試題交易？' : '完成三條證據鏈' : solved ? '密碼已解開' : room.prompt;
   $('puzzle-status').textContent = state.finalUnlocked && state.room===3 ? 'FINAL' : solved ? 'OPEN' : 'LOCKED';
   $('code-form').classList.toggle('hidden', solved);
   $('hint-button').classList.toggle('hidden', solved);
   $('code-input').value = '';
-  $('code-message').textContent = state.finalUnlocked && state.room===3 ? '錄音、簽核文件和識別證紀錄指向同一人。' : solved ? '你可以使用左側場景列表繼續調查。' : '仔細閱讀找到的線索。';
+  $('code-message').textContent = state.finalUnlocked && state.room===3 ? state.evidenceSolved ? '錄音、簽核文件和識別證紀錄指向同一人。' : '每一題都能在調查筆記裡找到對應紀錄。' : solved ? '你可以使用左側場景列表繼續調查。' : '仔細閱讀找到的線索。';
   $('code-message').className = 'code-message';
   $('progress-text').textContent = `${state.finalUnlocked ? 4 : state.unlocked} / 4`;
   $('progress-fill').style.width = `${(state.finalUnlocked ? 4 : state.unlocked)*25}%`;
@@ -123,10 +135,35 @@ function render() {
   renderFinalChoices();
 }
 
+const evidenceAnswers = {departure:'gate',camera:'001',record:'transfer'};
+
 function renderFinalChoices() {
+  let evidence = $('evidence-form');
+  if (!evidence) { evidence = document.createElement('form'); evidence.id='evidence-form'; evidence.className='evidence-form'; $('code-form').after(evidence); }
+  const showEvidence = state.finalUnlocked && state.room===3 && !state.evidenceSolved && !state.complete;
+  evidence.classList.toggle('hidden', !showEvidence);
+  if (showEvidence) {
+    evidence.innerHTML = '<label>01 / 哪筆紀錄反駁「21:15 已離校」？<select name="departure" required><option value="">選擇線索</option><option value="clock">21:15 停住的時鐘</option><option value="gate">22:05 側門出入簿</option><option value="patrol">21:10 夜間巡查表</option></select></label><label>02 / 哪張識別證曾關閉 B 棟監視器？<select name="camera" required><option value="">選擇線索</option><option value="worker">工友通行證</option><option value="001">管理員識別證 001</option><option value="student">林澄學生證</option></select></label><label>03 / 哪份文件在公告時間之後被製作？<select name="record" required><option value="">選擇線索</option><option value="borrow">圖書借閱簿</option><option value="transfer">21:30 轉學申請</option><option value="schedule">晚自習時刻表</option></select></label><button type="submit">核對證據 <span>→</span></button>';
+    evidence.querySelectorAll('select').forEach(select=>{select.value=state.evidenceChoices[select.name]||'';});
+    evidence.onchange = event => { const select=event.target; if(select.name in evidenceAnswers){state.evidenceChoices[select.name]=select.value;save();} };
+    evidence.onsubmit = event => {
+      event.preventDefault();
+      const selected = Object.fromEntries(new FormData(evidence));
+      state.evidenceChoices={...state.evidenceChoices,...selected};save();
+      const incorrect = ['departure','camera','record'].findIndex(key=>selected[key]!==evidenceAnswers[key]);
+      if (incorrect>=0) {
+        $('code-message').textContent=`第 ${incorrect+1} 條證據仍不吻合。再對照筆記中的時間與權限。`;
+        $('code-message').className='code-message error';
+        return;
+      }
+      state.evidenceSolved=true; save(); render();
+      $('code-message').textContent='三條證據已吻合。現在指出主導掩蓋的人。';
+      $('code-message').className='code-message success';
+    };
+  }
   let answers = $('final-answers');
   if (!answers) { answers = document.createElement('div'); answers.id='final-answers'; answers.className='final-answers'; $('code-form').after(answers); }
-  answers.classList.toggle('hidden', !state.finalUnlocked || state.room!==3 || state.complete);
+  answers.classList.toggle('hidden', !state.finalUnlocked || !state.evidenceSolved || state.room!==3 || state.complete);
   answers.innerHTML = '<button type="button" data-answer="shen">教務主任・沈國維 <span>↗</span></button><button type="button" data-answer="guard">工友・許伯 <span>↗</span></button><button type="button" data-answer="lin">林澄本人 <span>↗</span></button>';
   answers.querySelectorAll('button').forEach(button=>button.addEventListener('click',()=>answer(button.dataset.answer)));
 }
@@ -162,6 +199,7 @@ function rewardCurrentRoom() {
 }
 
 function answer(choice) {
+  if (!state.evidenceSolved) return;
   if(choice==='shen') {
     state.complete=true; save();
     $('ending-story').innerHTML='沈國維在 21:22 關閉監視器，又在 21:30 簽下假的轉學文件，企圖掩蓋試題交易。林澄早已在 22:05 帶著原始證據離校。你將錄音和紀錄公開，這一次，她的聲音沒有被抹去。';
