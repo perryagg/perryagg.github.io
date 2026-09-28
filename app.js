@@ -227,6 +227,8 @@ function restart(confirmFirst=true) {
   state=defaultState();save();
   $('ending').classList.add('hidden');
   $('intro').classList.remove('hidden');
+  $('school-cta').textContent='開始調查 ↗';
+  document.title='密室檔案｜選擇你的逃脫故事';
   render();
 }
 
@@ -249,12 +251,13 @@ $('highlight-toggle').addEventListener('click',()=>{state.highlightHints=!state.
 $('modal-action').addEventListener('click',closeModal);
 $('modal').addEventListener('click',event=>{if(event.target===$('modal')) closeModal();});
 document.addEventListener('keydown',event=>{if(event.key==='Escape'&&!$('modal').classList.contains('hidden')) closeModal();});
-$('start-button').addEventListener('click',()=>{state.started=true;save();$('intro').classList.add('hidden');});
+$('start-button').addEventListener('click',()=>{state.started=true;save();$('intro').classList.add('hidden');document.title='第七節之後｜校園懸疑密室逃脫';if(state.complete)$('ending').classList.remove('hidden');});
+$('menu-button').addEventListener('click',()=>{$('intro').classList.remove('hidden');document.title='密室檔案｜選擇你的逃脫故事';});
 $('restart-button').addEventListener('click',()=>restart(true));
 $('ending-restart').addEventListener('click',()=>restart(false));
 $('notes-toggle').addEventListener('click',()=>{const panel=document.querySelector('.case-panel');const open=panel.classList.toggle('notes-open');$('notes-toggle').setAttribute('aria-expanded',String(open));$('notes-toggle').querySelector('span').textContent=open?'−':'＋';});
 
 render();
-if(state.started) $('intro').classList.add('hidden');
-if(state.complete) { $('ending-story').innerHTML='沈國維在 21:22 關閉監視器，又在 21:30 簽下假的轉學文件，企圖掩蓋試題交易。林澄早已在 22:05 帶著原始證據離校。你將錄音和紀錄公開，這一次，她的聲音沒有被抹去。'; $('ending-clues').textContent=state.seen.length; $('ending-time').textContent=timeText(); $('ending-hints').textContent=state.hints.reduce((a,b)=>a+b,0); $('ending').classList.remove('hidden'); }
-setInterval(()=>{if(state.started&&!state.complete){state.seconds++;$('timer').textContent=timeText();if(state.seconds%10===0)save();}},1000);
+if(state.started)$('school-cta').textContent=state.complete?'檢視結局 ↗':'繼續調查 ↗';
+if(state.complete) { $('ending-story').innerHTML='沈國維在 21:22 關閉監視器，又在 21:30 簽下假的轉學文件，企圖掩蓋試題交易。林澄早已在 22:05 帶著原始證據離校。你將錄音和紀錄公開，這一次，她的聲音沒有被抹去。'; $('ending-clues').textContent=state.seen.length; $('ending-time').textContent=timeText(); $('ending-hints').textContent=state.hints.reduce((a,b)=>a+b,0); }
+setInterval(()=>{if(state.started&&!state.complete&&$('intro').classList.contains('hidden')){state.seconds++;$('timer').textContent=timeText();if(state.seconds%10===0)save();}},1000);

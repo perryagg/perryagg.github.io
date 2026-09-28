@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b2430">
+  <meta name="description" content="霧港燈塔：一款約 30 分鐘的繁體中文密室逃脫遊戲。用旗語、鏡片、閥門和燈號找回失聯船隻。">
+  <title>霧港燈塔｜密室檔案</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="lighthouse.css">
+  <script src="lighthouse.js" defer></script>
+</head>
+<body>
+  <div class="noise" aria-hidden="true"></div>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="brand"><span class="brand-mark">F<span class="brand-dot">.</span></span><span><b>霧港燈塔</b><small>THE FOG HARBOR FILE</small></span></div>
+      <div class="topbar-right"><a class="menu-button" href="index.html">選擇案件</a><span class="case-id">案件編號 / 02—13</span><span class="time-chip"><span class="pulse"></span>已調查 <strong id="lh-timer">00:00</strong></span><button class="icon-button" id="lh-restart" type="button" title="重新開始" aria-label="重新開始">↺</button></div>
+    </header>
+    <main class="layout">
+      <aside class="case-panel" aria-label="案件資料與調查筆記">
+        <div class="panel-eyebrow">HARBOR FILE <span>02 / 失聯中</span></div>
+        <div class="case-title"><span class="case-vertical">失聯航道</span><h1>那盞燈<br>去哪了<span>？</span></h1></div>
+        <p class="case-summary">昨夜 23:40，霧港燈塔的光束偏離航道。貨船「曙光號」失聯，守燈人留下一句話：「燈沒有熄，是有人讓它照錯方向。」</p>
+        <div class="case-divider"></div>
+        <div class="section-heading"><span>修復進度</span><span id="lh-progress-text">0 / 5</span></div>
+        <div class="progress-track"><div id="lh-progress-fill"></div></div>
+        <nav class="room-nav" id="lh-nav" aria-label="燈塔場景切換"></nav>
+        <div class="case-divider"></div>
+        <div class="section-heading notes-heading"><span>調查筆記</span><span id="lh-clue-count">0 條</span></div>
+        <button id="lh-notes-toggle" class="notes-toggle" type="button" aria-expanded="false">查看調查筆記 <span>＋</span></button>
+        <div id="lh-clues" class="clue-list"><p class="empty-note">調查物件後，線索會記在這裡。</p></div>
+      </aside>
+      <section class="play-area" aria-label="燈塔場景">
+        <div class="scene-heading"><div><span class="eyebrow" id="lh-chapter-label">CHAPTER 01 — THE PIER</span><h2 id="lh-title">封港碼頭</h2><p id="lh-subtitle">雨還沒停，旗桿上只剩空繩在拍打。</p></div><span class="scene-count" id="lh-count">01 / 05</span></div>
+        <div class="scene lh-scene" id="lh-scene"><div class="scene-grain" aria-hidden="true"></div><div id="lh-art" class="scene-art" aria-hidden="true"></div><span class="scene-coordinate" id="lh-location">霧港・舊碼頭</span><div id="lh-hotspots" class="hotspots"></div><span class="scene-corner scene-corner-tl"></span><span class="scene-corner scene-corner-tr"></span><span class="scene-corner scene-corner-bl"></span><span class="scene-corner scene-corner-br"></span></div>
+        <div class="scene-footer"><span><i class="small-diamond"></i> 點選標記或下方清單調查</span><span id="lh-footer-count">已發現 0 / 5 件</span></div>
+        <div id="lh-objects" class="mobile-object-list" aria-label="可調查物件"></div>
+      </section>
+      <aside class="action-panel" aria-label="當前謎題">
+        <div class="action-head"><span class="eyebrow">CURRENT MECHANISM</span><div class="signal-bars"><i></i><i></i><i></i><i></i></div></div>
+        <div class="objective-number" id="lh-objective-no">01<span>/05</span></div>
+        <h3 id="lh-objective">升起回航旗語</h3>
+        <p id="lh-objective-desc">從碼頭紀錄還原四面旗的升起順序。</p>
+        <div class="action-rule"></div>
+        <div class="puzzle-label"><span>互動機關</span><span id="lh-status">ACTIVE</span></div>
+        <p class="puzzle-prompt" id="lh-prompt">依序點選四面旗</p>
+        <div id="lh-challenge" class="lh-challenge"></div>
+        <p id="lh-feedback" class="code-message" role="status" aria-live="polite">線索分散在場景裡。</p>
+        <div class="action-rule"></div>
+        <button class="hint-button" id="lh-hint-button" type="button"><span class="hint-icon">✦</span><span>需要一點提示？</span><span class="hint-arrow">↗</span></button>
+        <div id="lh-hint-content" class="hint-content" aria-live="polite"></div>
+        <div class="action-bottom"><span>建議遊玩時間</span><strong>約 30 分鐘</strong><span>進度會自動儲存在此瀏覽器</span></div>
+      </aside>
+    </main>
+    <footer class="app-footer"><span>霧港燈塔 · 北緯 24°</span><span>FOLLOW THE LIGHT, NOT THE SHADOW</span></footer>
+  </div>
+
+  <div id="lh-modal" class="modal-backdrop hidden" role="presentation"><section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="lh-modal-title"><button id="lh-modal-close" class="modal-close" type="button" aria-label="關閉">×</button><span id="lh-modal-eyebrow" class="eyebrow">EVIDENCE</span><div id="lh-modal-icon" class="modal-icon" aria-hidden="true"></div><h2 id="lh-modal-title"></h2><div id="lh-modal-body" class="modal-body"></div><div id="lh-modal-tag" class="modal-tag"></div><button id="lh-modal-action" class="modal-action" type="button">繼續調查 <span>→</span></button></section></div>
+
+  <div id="lh-intro" class="intro-overlay"><div class="intro-inner"><span class="intro-index">HARBOR FILE / 02—13</span><div class="intro-rule"></div><span class="intro-overline">一夜濃霧。一艘失聯的船。五道被鎖住的機關。</span><h2>霧港<span>燈塔</span></h2><p>「如果燈還亮著，為什麼船看不見岸？」<br>守燈人消失前，只在桌上留下這句話。</p><button id="lh-start" type="button">進入霧港 <span>↗</span></button><small>旗語排序 · 航道配對 · 閥門方向 · 燈號矩陣 · 最終推理 / 約 30 分鐘</small></div><div class="intro-decoration" aria-hidden="true">F</div></div>
+
+  <div id="lh-ending" class="ending-overlay hidden"><div class="ending-inner"><span class="eyebrow">HARBOR FILE / RESOLVED</span><div class="ending-symbol">✦</div><h2>燈光終於照對了方向。</h2><p>曙光號沒有沉沒。船員依守燈人的暗號躲進南灣，等待救援。主透鏡曾被人手動轉向北礁，才讓主航道陷入黑暗；你修復燈號並將南灣座標送出。天亮以前，救援艇接回了所有船員。</p><div class="ending-stats"><span>發現線索 <strong id="lh-ending-clues">0</strong></span><span>調查時間 <strong id="lh-ending-time">00:00</strong></span><span>使用提示 <strong id="lh-ending-hints">0</strong></span></div><button id="lh-ending-restart" type="button">重新調查 ↗</button><a class="ending-menu" href="index.html">選擇其他案件 ↗</a></div></div>
+</body>
+</html>

@@ -4,8 +4,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#101820">
-  <meta name="description" content="一款約 30 分鐘的校園懸疑密室逃脫網頁遊戲。調查四個場景，拼湊失蹤之夜的真相。">
-  <title>第七節之後｜校園懸疑密室逃脫</title>
+  <meta name="description" content="兩款約 30 分鐘的繁體中文密室逃脫網頁遊戲。從校園懸疑案或霧港燈塔開始調查。">
+  <title>密室檔案｜選擇你的逃脫故事</title>
   <link rel="stylesheet" href="style.css">
   <script src="app.js" defer></script>
 </head>
@@ -14,7 +14,7 @@
   <div class="app-shell">
     <header class="topbar">
       <div class="brand"><span class="brand-mark">07<span class="brand-dot">.</span></span><span><b>第七節之後</b><small>AFTER THE LAST BELL</small></span></div>
-      <div class="topbar-right"><span class="case-id">案件編號 / 11—07</span><span class="time-chip"><span class="pulse"></span>已調查 <strong id="timer">00:00</strong></span><button class="icon-button" id="restart-button" type="button" title="重新開始" aria-label="重新開始">↺</button></div>
+      <div class="topbar-right"><button class="menu-button" id="menu-button" type="button">選擇案件</button><span class="case-id">案件編號 / 11—07</span><span class="time-chip"><span class="pulse"></span>已調查 <strong id="timer">00:00</strong></span><button class="icon-button" id="restart-button" type="button" title="重新開始" aria-label="重新開始">↺</button></div>
     </header>
 
     <main class="layout">
@@ -77,10 +77,15 @@
   </div>
 
   <div id="intro" class="intro-overlay">
-    <div class="intro-inner"><span class="intro-index">NC HIGH SCHOOL / CASE 11—07</span><div class="intro-rule"></div><span class="intro-overline">一封匿名信。四個房間。一個被藏起來的真相。</span><h2>第七節<span>之後</span></h2><p>「如果你讀到這封信，代表我還沒有回家。<br>別相信公告。從三樓走廊開始找。」<br><span>— 林澄留下的最後一句話</span></p><button id="start-button" type="button">進入校舍 <span>↗</span></button><small>點選物件尋找線索 · 輸入密碼推進劇情 · 約 30 分鐘</small></div>
-    <div class="intro-decoration" aria-hidden="true">07</div>
+    <div class="game-selector"><span class="intro-index">ESCAPE FILES / TWO STORIES</span><div class="intro-rule"></div><span class="intro-overline">兩段失聯紀錄，等你找出真相。</span><h2>選擇你的<span>密室</span></h2><p>兩款故事各約 30 分鐘。進度分開儲存在這台裝置上。</p>
+      <div class="game-options">
+        <button id="start-button" class="game-option" type="button"><span class="option-index">01 / 校園懸疑</span><strong>第七節之後</strong><span class="option-description">一名學生在晚自習後消失。調查走廊、教室、圖書室與廣播室，拆穿失蹤公告。</span><span class="option-footer"><span>線索推理 · 四個場景</span><em id="school-cta">開始調查 ↗</em></span></button>
+        <a class="game-option lighthouse-option" href="lighthouse.html"><span class="option-index">02 / 海港懸疑</span><strong>霧港燈塔</strong><span class="option-description">燈塔停光，一艘船在濃霧裡失聯。升旗、配鏡、調整閥門與修復燈號，找出安全航道。</span><span class="option-footer"><span>五種互動謎題 · 五個場景</span><em>進入燈塔 ↗</em></span></a>
+      </div><small>無需帳號或安裝 · 支援手機遊玩</small>
+    </div>
+    <div class="intro-decoration" aria-hidden="true">02</div>
   </div>
 
-  <div id="ending" class="ending-overlay hidden"><div class="ending-inner"><span class="eyebrow">CASE FILE / CLOSED</span><div class="ending-symbol">✳</div><h2>真相，終於有了聲音。</h2><p id="ending-story"></p><div class="ending-stats"><span>發現線索 <strong id="ending-clues"></strong></span><span>調查時間 <strong id="ending-time"></strong></span><span>使用提示 <strong id="ending-hints"></strong></span></div><button id="ending-restart" type="button">重新調查 ↗</button></div></div>
+  <div id="ending" class="ending-overlay hidden"><div class="ending-inner"><span class="eyebrow">CASE FILE / CLOSED</span><div class="ending-symbol">✳</div><h2>真相，終於有了聲音。</h2><p id="ending-story"></p><div class="ending-stats"><span>發現線索 <strong id="ending-clues"></strong></span><span>調查時間 <strong id="ending-time"></strong></span><span>使用提示 <strong id="ending-hints"></strong></span></div><button id="ending-restart" type="button">重新調查 ↗</button><a class="ending-menu" href="index.html">選擇其他案件 ↗</a></div></div>
 </body>
 </html>
