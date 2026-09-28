@@ -3,8 +3,8 @@ const STORAGE_KEY = 'after-last-bell-save-v1';
 const rooms = [
   {
     name: '夜間走廊', english: 'THE CORRIDOR', location: 'B棟・三樓走廊', subtitle: '最後一聲鐘響之後，整棟教學樓忽然安靜了。',
-    objective: '打開置物櫃', description: '尋找走廊裡與「最後一節」有關的線索。', prompt: '四位數置物櫃密碼', code: '5121',
-    hints: ['先調查晚自習時刻表和匿名便條。', '時刻表的最後一個時間是 21:15。便條要你把數字倒過來。', '把 2115 反向排列，輸入 5121。'],
+    objective: '打開置物櫃', description: '尋找走廊裡與「最後一節」有關的線索。', prompt: '四位數置物櫃密碼', code: '5112',
+    hints: ['先調查晚自習時刻表和匿名便條。', '時刻表的最後一個時間是 21:15。便條要你把數字倒過來。', '把 2115 反向排列，輸入 5112。'],
     objects: [
       {id:'clock', name:'停住的時鐘', icon:'◷', x:52, y:17, note:'時鐘停在 21:15。', body:'指針卡在 <strong>21:15</strong>。鐘面邊緣有一道細長刮痕，像是有人刻意把它停在這一刻。'},
       {id:'schedule', name:'晚自習時刻表', icon:'▤', x:23, y:49, note:'最後一節晚自習結束於 21:15。', body:'褪色的時刻表仍貼在牆上。<div class="evidence-grid"><span>第一節 <em>18:30</em></span><span>第二節 <em>19:45</em></span><span>第三節 <em>20:30</em></span><span>最後一節 <em>21:15</em></span></div>「最後一節」被紅筆圈了起來。'},
