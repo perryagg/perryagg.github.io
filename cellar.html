@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#211b18">
+  <meta name="description" content="封存地窖：七道互動謎題、約 30 分鐘的繁體中文密室逃脫遊戲。調查被埋藏的水源案。">
+  <title>封存地窖｜密室檔案</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="cellar.css">
+  <script src="cellar.js" defer></script>
+</head>
+<body class="cellar-page">
+  <div class="noise" aria-hidden="true"></div>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="brand"><span class="brand-mark">C<span class="brand-dot">.</span></span><span><b>封存地窖</b><small>THE SEALED CELLAR</small></span></div>
+      <div class="topbar-right"><a class="menu-button" href="index.html">選擇案件</a><span class="case-id">案件編號 / 03—27</span><span class="time-chip"><span class="pulse"></span>已調查 <strong id="c-timer">00:00</strong></span><button class="icon-button" id="c-restart" type="button" title="重新開始" aria-label="重新開始">↺</button></div>
+    </header>
+    <main class="layout">
+      <aside class="case-panel" aria-label="地窖案件與調查筆記">
+        <div class="panel-eyebrow">CELLAR FILE <span>03 / 封存中</span></div>
+        <div class="case-title"><span class="case-vertical">地下水案</span><h1>井水<br>去了哪<span>？</span></h1></div>
+        <p class="case-summary">暴雨夜，舊莊園的地窖門在你身後落鎖。村井乾涸的真相，被藏在七道機關之後；地窖深處仍傳來水聲。</p>
+        <div class="case-divider"></div>
+        <div class="section-heading"><span>調查進度</span><span id="c-progress-text">0 / 7</span></div>
+        <div class="progress-track"><div id="c-progress-fill"></div></div>
+        <nav class="room-nav" id="c-nav" aria-label="地窖場景切換"></nav>
+        <div class="case-divider"></div>
+        <div class="section-heading notes-heading"><span>調查筆記</span><span id="c-clue-count">0 條</span></div>
+        <button id="c-notes-toggle" class="notes-toggle" type="button" aria-expanded="false">查看調查筆記 <span>＋</span></button>
+        <div id="c-clues" class="clue-list"><p class="empty-note">調查物件後，線索會記在這裡。</p></div>
+      </aside>
+      <section class="play-area" aria-label="地窖場景">
+        <div class="scene-heading"><div><span class="eyebrow" id="c-chapter-label">CHAPTER 01 — THE STAIR</span><h2 id="c-title">封門階梯</h2><p id="c-subtitle">石門落下了。牆上的家徽刻痕似乎能開門。</p></div><span class="scene-count" id="c-count">01 / 07</span></div>
+        <div class="scene c-scene" id="c-scene"><div class="scene-grain" aria-hidden="true"></div><div id="c-art" class="scene-art" aria-hidden="true"></div><span class="scene-coordinate" id="c-location">舊莊園・地下入口</span><div id="c-hotspots" class="hotspots"></div><span class="scene-corner scene-corner-tl"></span><span class="scene-corner scene-corner-tr"></span><span class="scene-corner scene-corner-bl"></span><span class="scene-corner scene-corner-br"></span></div>
+        <div class="scene-footer"><span><i class="small-diamond"></i> 點選標記或下方清單調查</span><span id="c-footer-count">已發現 0 / 4 件</span></div>
+        <div id="c-objects" class="mobile-object-list" aria-label="可調查物件"></div>
+      </section>
+      <aside class="action-panel" aria-label="當前謎題">
+        <div class="action-head"><span class="eyebrow">CURRENT MECHANISM</span><div class="signal-bars"><i></i><i></i><i></i><i></i></div></div>
+        <div class="objective-number" id="c-objective-no">01<span>/07</span></div>
+        <h3 id="c-objective">解開家徽封印</h3>
+        <p id="c-objective-desc">調查刻痕，依次觸碰五枚家徽。</p>
+        <div class="action-rule"></div>
+        <div class="puzzle-label"><span>互動機關</span><span id="c-status">ACTIVE</span></div>
+        <p class="puzzle-prompt" id="c-prompt">依線索排出家徽順序</p>
+        <div id="c-challenge" class="c-challenge"></div>
+        <p id="c-feedback" class="code-message" role="status" aria-live="polite">線索分散在場景裡。</p>
+        <div class="action-rule"></div>
+        <button class="hint-button" id="c-hint-button" type="button"><span class="hint-icon">✦</span><span>需要一點提示？</span><span class="hint-arrow">↗</span></button>
+        <div id="c-hint-content" class="hint-content" aria-live="polite"></div>
+        <div class="action-bottom"><span>建議遊玩時間</span><strong>約 30 分鐘</strong><span>進度會自動儲存在此瀏覽器</span></div>
+      </aside>
+    </main>
+    <footer class="app-footer"><span>舊莊園 · 雨季最後一夜</span><span>THE WATER KEPT THE RECORD</span></footer>
+  </div>
+
+  <div id="c-modal" class="modal-backdrop hidden" role="presentation"><section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="c-modal-title"><button id="c-modal-close" class="modal-close" type="button" aria-label="關閉">×</button><div class="modal-heading-row"><span id="c-modal-eyebrow" class="eyebrow">EVIDENCE</span><button id="c-highlight-toggle" class="highlight-toggle" type="button" aria-pressed="false" aria-label="黃字提示：關閉">黃字提示 <span id="c-highlight-status">關</span></button></div><div id="c-modal-icon" class="modal-icon" aria-hidden="true"></div><h2 id="c-modal-title"></h2><div id="c-modal-body" class="modal-body"></div><div id="c-modal-tag" class="modal-tag"></div><button id="c-modal-action" class="modal-action" type="button">繼續調查 <span>→</span></button></section></div>
+
+  <div id="c-intro" class="intro-overlay"><div class="intro-inner"><span class="intro-index">CELLAR FILE / 03—27</span><div class="intro-rule"></div><span class="intro-overline">一場暴雨。一口乾井。七道封存的機關。</span><h2>封存<span>地窖</span></h2><p>「井從來沒有乾過，只是有人改了水的方向。」<br>你循著這句匿名留言進入地窖，石門卻在身後落下。</p><button id="c-start" type="button">進入地窖 <span>↗</span></button><small>七個場景 · 家徽、天平、暗渠、密文、貨桶、泵房與最終推理 / 約 30 分鐘</small></div><div class="intro-decoration" aria-hidden="true">C</div></div>
+
+  <div id="c-ending" class="ending-overlay hidden"><div class="ending-inner"><span class="eyebrow">CELLAR FILE / RESOLVED</span><div class="ending-symbol">✦</div><h2>水聲，終於回到村裡。</h2><p>你打開回村暗渠，也帶出被藏起來的帳冊。莊園主私自將村井水引到釀酒窖，再用「乾旱」掩蓋改道。守窖人留下七道機關，是為了讓找到帳冊的人能辨明真相。雨停時，村井重新湧出清水。</p><div class="ending-stats"><span>發現線索 <strong id="c-ending-clues">0</strong></span><span>調查時間 <strong id="c-ending-time">00:00</strong></span><span>使用提示 <strong id="c-ending-hints">0</strong></span></div><button id="c-ending-restart" type="button">重新調查 ↗</button><a class="ending-menu" href="index.html">選擇其他案件 ↗</a></div></div>
+</body>
+</html>
