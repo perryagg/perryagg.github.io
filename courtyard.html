@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#202a22">
+  <meta name="description" content="雨夜三合院：八道互動謎題、約 30 分鐘的繁體中文密室逃脫遊戲。找回祖厝失蹤的原契。">
+  <title>雨夜三合院｜密室檔案</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="courtyard.css">
+  <script src="courtyard.js" defer></script>
+</head>
+<body class="courtyard-page">
+  <div class="noise" aria-hidden="true"></div>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="brand"><span class="brand-mark">院<span class="brand-dot">.</span></span><span><b>雨夜三合院</b><small>THE COURTYARD FILE</small></span></div>
+      <div class="topbar-right"><a class="menu-button" href="index.html">選擇案件</a><span class="case-id">案件編號 / 04—18</span><span class="time-chip"><span class="pulse"></span>已調查 <strong id="cy-timer">00:00</strong></span><button class="icon-button" id="cy-restart" type="button" title="重新開始" aria-label="重新開始">↺</button></div>
+    </header>
+    <main class="layout">
+      <aside class="case-panel" aria-label="三合院案件與調查筆記">
+        <div class="panel-eyebrow">COURTYARD FILE <span>04 / 待查</span></div>
+        <div class="case-title"><span class="case-vertical">祖厝原契</span><h1>這間厝<br>賣了嗎<span>？</span></h1></div>
+        <p class="case-summary">一份「出售祖厝」的通知貼上門口，但阿嬤生前說過原契還藏在屋裡。雨夜的三合院門突然反鎖，你必須循著她留下的八道機關找出真相。</p>
+        <div class="case-divider"></div>
+        <div class="section-heading"><span>調查進度</span><span id="cy-progress-text">0 / 8</span></div>
+        <div class="progress-track"><div id="cy-progress-fill"></div></div>
+        <nav class="room-nav" id="cy-nav" aria-label="三合院場景切換"></nav>
+        <div class="case-divider"></div>
+        <div class="section-heading notes-heading"><span>調查筆記</span><span id="cy-clue-count">0 條</span></div>
+        <button id="cy-notes-toggle" class="notes-toggle" type="button" aria-expanded="false">查看調查筆記 <span>＋</span></button>
+        <div id="cy-clues" class="clue-list"><p class="empty-note">調查物件後，線索會記在這裡。</p></div>
+      </aside>
+      <section class="play-area" aria-label="三合院場景">
+        <div class="scene-heading"><div><span class="eyebrow" id="cy-chapter-label">CHAPTER 01 — THE COURT</span><h2 id="cy-title">雨中的門埕</h2><p id="cy-subtitle">雨水滴過紅磚，五盞燈籠還在廊下搖晃。</p></div><span class="scene-count" id="cy-count">01 / 08</span></div>
+        <div class="scene cy-scene" id="cy-scene"><div class="scene-grain" aria-hidden="true"></div><div id="cy-art" class="scene-art" aria-hidden="true"></div><span class="scene-coordinate" id="cy-location">三合院・門埕</span><div id="cy-hotspots" class="hotspots"></div><span class="scene-corner scene-corner-tl"></span><span class="scene-corner scene-corner-tr"></span><span class="scene-corner scene-corner-bl"></span><span class="scene-corner scene-corner-br"></span></div>
+        <div class="scene-footer"><span><i class="small-diamond"></i> 點選標記或下方清單調查</span><span id="cy-footer-count">已發現 0 / 4 件</span></div>
+        <div id="cy-objects" class="mobile-object-list" aria-label="可調查物件"></div>
+      </section>
+      <aside class="action-panel" aria-label="當前謎題">
+        <div class="action-head"><span class="eyebrow">CURRENT MECHANISM</span><div class="signal-bars"><i></i><i></i><i></i><i></i></div></div>
+        <div class="objective-number" id="cy-objective-no">01<span>/08</span></div>
+        <h3 id="cy-objective">點亮回家的燈</h3>
+        <p id="cy-objective-desc">讀出廊柱上的提示，依順序點亮五盞燈。</p>
+        <div class="action-rule"></div>
+        <div class="puzzle-label"><span>互動機關</span><span id="cy-status">ACTIVE</span></div>
+        <p class="puzzle-prompt" id="cy-prompt">依序點亮五盞燈</p>
+        <div id="cy-challenge" class="cy-challenge"></div>
+        <p id="cy-feedback" class="code-message" role="status" aria-live="polite">線索分散在場景裡。</p>
+        <div class="action-rule"></div>
+        <button class="hint-button" id="cy-hint-button" type="button"><span class="hint-icon">✦</span><span>需要一點提示？</span><span class="hint-arrow">↗</span></button>
+        <div id="cy-hint-content" class="hint-content" aria-live="polite"></div>
+        <div class="action-bottom"><span>建議遊玩時間</span><strong>約 30 分鐘</strong><span>進度會自動儲存在此瀏覽器</span></div>
+      </aside>
+    </main>
+    <footer class="app-footer"><span>林家三合院 · 雨季最後一夜</span><span>THE HOUSE REMEMBERS</span></footer>
+  </div>
+
+  <div id="cy-modal" class="modal-backdrop hidden" role="presentation"><section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="cy-modal-title"><button id="cy-modal-close" class="modal-close" type="button" aria-label="關閉">×</button><div class="modal-heading-row"><span id="cy-modal-eyebrow" class="eyebrow">EVIDENCE</span><button id="cy-highlight-toggle" class="highlight-toggle" type="button" aria-pressed="false" aria-label="黃字提示：關閉">黃字提示 <span id="cy-highlight-status">關</span></button></div><div id="cy-modal-icon" class="modal-icon" aria-hidden="true"></div><h2 id="cy-modal-title"></h2><div id="cy-modal-body" class="modal-body"></div><div id="cy-modal-tag" class="modal-tag"></div><button id="cy-modal-action" class="modal-action" type="button">繼續調查 <span>→</span></button></section></div>
+
+  <div id="cy-intro" class="intro-overlay"><div class="intro-inner"><span class="intro-index">COURTYARD FILE / 04—18</span><div class="intro-rule"></div><span class="intro-overline">一座祖厝。一份失蹤原契。八道留下來的機關。</span><h2>雨夜<span>三合院</span></h2><p>「要是有人說我賣了厝，去聽屋子裡留下的聲音。」<br>阿嬤的字條讓你在暴雨夜回來；門卻在身後扣上了。</p><button id="cy-start" type="button">走進三合院 <span>↗</span></button><small>八個場景 · 點燈、滑牌、接水路、稱穀、對名冊、拼窗花、排時間與最終推理 / 約 30 分鐘</small></div><div class="intro-decoration" aria-hidden="true">院</div></div>
+
+  <div id="cy-ending" class="ending-overlay hidden"><div class="ending-inner"><span class="eyebrow">COURTYARD FILE / RESOLVED</span><div class="ending-symbol">✦</div><h2>祖厝的門，重新打開了。</h2><p>你找回原契、未出售的手記與印章保管記錄。公告上的印章是從舊紙上描印，張管事在阿嬤病後偽造出售通知，想趁家人不在時搬走屋內物件。你把三份證據帶出三合院；雨停時，所有人終於能對照原件釐清這件事。</p><div class="ending-stats"><span>發現線索 <strong id="cy-ending-clues">0</strong></span><span>調查時間 <strong id="cy-ending-time">00:00</strong></span><span>使用提示 <strong id="cy-ending-hints">0</strong></span></div><button id="cy-ending-restart" type="button">重新調查 ↗</button><a class="ending-menu" href="index.html">選擇其他案件 ↗</a></div></div>
+</body>
+</html>

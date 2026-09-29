@@ -33,3 +33,9 @@
 .cellar-option .option-index,.cellar-option .option-footer em{color:#f0bb83}
 @media(max-width:1000px){.game-options{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:700px){.game-options{grid-template-columns:1fr}}
+.game-selector{width:min(1020px,100%)}
+.game-options{grid-template-columns:repeat(2,minmax(0,1fr))}
+.game-option{min-height:225px}
+.courtyard-option{background:linear-gradient(145deg,#343629,#1b2b2b);border-color:#9a9b67}
+.courtyard-option .option-index,.courtyard-option .option-footer em{color:#e2df96}
+@media(max-width:700px){.game-options{grid-template-columns:1fr}.game-option{min-height:215px}}
