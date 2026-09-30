@@ -39,3 +39,5 @@
 .courtyard-option{background:linear-gradient(145deg,#343629,#1b2b2b);border-color:#9a9b67}
 .courtyard-option .option-index,.courtyard-option .option-footer em{color:#e2df96}
 @media(max-width:700px){.game-options{grid-template-columns:1fr}.game-option{min-height:215px}}
+.office-option{background:linear-gradient(145deg,#21303c,#17232d);border-color:#7795a6}
+.office-option .option-index,.office-option .option-footer em{color:#b7d9e6}

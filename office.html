@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#162632">
+  <meta name="description" content="加班者的辦公室：七道需要交叉比對線索的繁體中文密室逃脫謎題，遊玩時間約 30 分鐘。">
+  <title>加班者的辦公室｜密室逃脫</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="office.css">
+  <script src="office.js" defer></script>
+</head>
+<body class="office-page">
+  <div class="noise" aria-hidden="true"></div>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="brand"><span class="brand-mark">05<span class="brand-dot">.</span></span><span><b>加班者的辦公室</b><small>THE LAST SHIFT</small></span></div>
+      <div class="topbar-right"><a class="menu-button" href="index.html">選擇案件</a><span class="case-id">案件編號 / 05—7</span><span class="time-chip"><span class="pulse"></span>調查時間 <strong id="o-timer">00:00</strong></span><button class="icon-button" id="o-restart" type="button" title="重新開始" aria-label="重新開始">↺</button></div>
+    </header>
+    <main class="layout">
+      <aside class="case-panel" aria-label="案件與線索">
+        <div class="panel-eyebrow">OFFICE FILE <span>05 / 夜班稽核</span></div>
+        <div class="case-title"><span class="case-vertical">午夜封鎖</span><h1>誰換了<br>那份<span>報告</span>？</h1></div>
+        <p class="case-summary">你收到匿名訊息：大樓在午夜斷電前，有人把真正的稽核報告換成清白版本。保全將出口鎖住，你只有留下的辦公紀錄可以還原過程。</p>
+        <div class="case-divider"></div>
+        <div class="section-heading"><span>調查進度</span><span id="o-progress-text">0 / 7</span></div>
+        <div class="progress-track"><div id="o-progress-fill"></div></div>
+        <nav class="room-nav" id="o-nav" aria-label="場景選擇"></nav>
+        <div class="case-divider"></div>
+        <div class="section-heading notes-heading"><span>線索筆記</span><span id="o-clue-count">0 條</span></div>
+        <button id="o-notes-toggle" class="notes-toggle" type="button" aria-expanded="false">查看線索筆記 <span>＋</span></button>
+        <div id="o-clues" class="clue-list"><p class="empty-note">調查物件後，線索會記在這裡。</p></div>
+      </aside>
+      <section class="play-area" aria-label="辦公室場景">
+        <div class="scene-heading"><div><span class="eyebrow" id="o-chapter">CHAPTER 01 — LOBBY</span><h2 id="o-title">接待大廳</h2><p id="o-subtitle"></p></div><span class="scene-count" id="o-count">01 / 07</span></div>
+        <div class="scene o-scene"><div class="scene-grain" aria-hidden="true"></div><div id="o-art" class="scene-art" aria-hidden="true"></div><span class="scene-coordinate" id="o-location"></span><div id="o-hotspots" class="hotspots"></div><span class="scene-corner scene-corner-tl"></span><span class="scene-corner scene-corner-tr"></span><span class="scene-corner scene-corner-bl"></span><span class="scene-corner scene-corner-br"></span></div>
+        <div class="scene-footer"><span><i class="small-diamond"></i> 點選場景標記，讀取散落的紀錄</span><span id="o-footer-count">已發現 0 / 3 件</span></div>
+        <div id="o-objects" class="mobile-object-list" aria-label="可調查物件"></div>
+      </section>
+      <aside class="action-panel" aria-label="目前謎題">
+        <div class="action-head"><span class="eyebrow">CURRENT OBJECTIVE</span><div class="signal-bars"><i></i><i></i><i></i><i></i></div></div>
+        <div class="objective-number" id="o-objective-no">01<span>/07</span></div>
+        <h3 id="o-objective"></h3><p id="o-description"></p>
+        <div class="action-rule"></div>
+        <div class="puzzle-label"><span>調查機關</span><span id="o-status">ACTIVE</span></div>
+        <p class="puzzle-prompt" id="o-prompt"></p>
+        <div id="o-challenge" class="o-challenge"></div>
+        <p id="o-feedback" class="code-message" role="status" aria-live="polite">線索分散在場景裡。</p>
+        <div class="action-rule"></div>
+        <button class="hint-button" id="o-hint" type="button"><span class="hint-icon">✦</span><span>需要一點提示？</span><span class="hint-arrow">↗</span></button>
+        <div id="o-hint-content" class="hint-content" aria-live="polite"></div>
+        <div class="action-bottom"><span>建議遊玩時間</span><strong>約 30 分鐘</strong><span>線索會保存在這台裝置上</span></div>
+      </aside>
+    </main>
+    <footer class="app-footer"><span>凜川顧問 · 23:17</span><span>EVERY EDIT LEAVES A TRACE</span></footer>
+  </div>
+  <div id="o-modal" class="modal-backdrop hidden" role="presentation"><section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="o-modal-title"><button id="o-modal-close" class="modal-close" type="button" aria-label="關閉">×</button><div class="modal-heading-row"><span id="o-modal-eyebrow" class="eyebrow">EVIDENCE</span></div><div id="o-modal-icon" class="modal-icon" aria-hidden="true"></div><h2 id="o-modal-title"></h2><div id="o-modal-body" class="modal-body"></div><div id="o-modal-tag" class="modal-tag"></div><button id="o-modal-action" class="modal-action" type="button">繼續調查 <span>→</span></button></section></div>
+  <div id="o-intro" class="intro-overlay"><div class="intro-inner"><span class="intro-index">OFFICE FILE / 05—7</span><div class="intro-rule"></div><span class="intro-overline">23:17 · 凜川顧問總部</span><h2>加班者的<span>辦公室</span></h2><p>匿名訊息說，稽核報告在今晚被掉包。午夜斷電後伺服器會自動清除暫存紀錄。你被鎖在樓內，必須沿著訪客、座位、列印、會議、網路與封存紀錄，還原真正發生的事。</p><button id="o-start" type="button">開始調查 <span>→</span></button><small>七個場景 · 約 30 分鐘 · 可隨時返回已開啟的場景</small></div><div class="intro-decoration" aria-hidden="true">05</div></div>
+  <div id="o-ending" class="ending-overlay hidden"><div class="ending-inner"><span class="eyebrow">OFFICE FILE / RESOLVED</span><div class="ending-symbol">✳</div><h2>被刪掉的，還留著痕跡。</h2><p>周利用共用帳號從灰室送出假版本，又把真正的報告藏進封存箱。你保住了原稿、列印紀錄與傳輸路徑。出口解除封鎖，稽核案得以重新調查。</p><div class="ending-stats"><span>發現線索 <strong id="o-ending-clues">0</strong></span><span>調查時間 <strong id="o-ending-time">00:00</strong></span><span>使用提示 <strong id="o-ending-hints">0</strong></span></div><button id="o-ending-restart" type="button">重新調查 ↗</button><a class="ending-menu" href="index.html">選擇其他案件 ↗</a></div></div>
+</body>
+</html>
